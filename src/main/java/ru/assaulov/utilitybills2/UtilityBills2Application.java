@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class UtilityBills2Application {
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 		SpringApplication.run(UtilityBills2Application.class, args);
 	}
 
