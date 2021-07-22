@@ -12,5 +12,6 @@ CREATE TABLE t_users (
     last_name varchar(255),
     password varchar(255) NOT NULL,
     gender varchar(255),
-    email varchar(255)
-)
+    email varchar(255),
+    PRIMARY KEY (user_id)
+);
