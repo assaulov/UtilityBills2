@@ -9,8 +9,8 @@ export function connect() {
     const socket = new SockJS('/websocket')
     stompClient = Stomp.over(socket)
     stompClient.debug = () => {}
-    stompClient.connect({},  frame => {
-        stompClient.subscribe('/topic/activity', message => {
+    stompClient.connect({},  () => {
+        stompClient.subscribe('/topic/app', message => {
             handlers.forEach(handler => handler(JSON.parse(message.body)))
         })
     })
