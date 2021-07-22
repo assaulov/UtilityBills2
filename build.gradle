@@ -6,7 +6,7 @@ plugins {
 }
 apply plugin: "org.liquibase.gradle"
 group = 'ru.assaulov'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.20'
 sourceCompatibility = '11'
 
 configurations {
