@@ -42,7 +42,7 @@ dependencies {
 
 liquibase {
     activities {
-        main {
+        main{
             File propsFile = new File("${project.rootDir}/src/main/resources/liquibase.properties")
             Properties properties = new Properties()
             properties.load(new FileInputStream(propsFile))

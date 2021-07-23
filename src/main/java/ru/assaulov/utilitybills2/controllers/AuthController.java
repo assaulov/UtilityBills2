@@ -8,32 +8,41 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.assaulov.utilitybills2.model.User;
-import ru.assaulov.utilitybills2.dto.UserLoginDto;
-import ru.assaulov.utilitybills2.dto.UserDto;
+import ru.assaulov.utilitybills2.payload.request.LoginRequest;
+import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
+import ru.assaulov.utilitybills2.payload.respose.UserResponse;
+import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("auth")
 public class AuthController {
 
-	final AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
+	private final UserServiceImpl userService;
 
 	@Autowired
-	public AuthController(AuthenticationManager authenticationManager) {
+	public AuthController(AuthenticationManager authenticationManager, UserServiceImpl userService) {
 		this.authenticationManager = authenticationManager;
+		this.userService = userService;
 	}
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@RequestBody UserLoginDto userLoginDto) {
+	public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(userLoginDto.getLogin(), userLoginDto.getPassword()));
+				new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		User userDetails = (User) authentication.getPrincipal();
-		return ResponseEntity.ok(new UserDto(
+		return ResponseEntity.ok(new UserResponse(
 				userDetails.getLogin(),
 				userDetails.getFullName(),
 				userDetails.getGender().getDescription(),
 				userDetails.getEmail()));
+	}
+
+	@PostMapping("/signup")
+	public ResponseEntity<?> save(@RequestBody RegistrationRequest user){
+		return userService.saveUser(user);
 	}
 }

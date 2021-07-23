@@ -1,9 +1,9 @@
-package ru.assaulov.utilitybills2.dto;
+package ru.assaulov.utilitybills2.payload.request;
 
 import lombok.Data;
 
 @Data
-public class UserLoginDto {
+public class LoginRequest {
 	private String login;
 	private String password;
 }
