@@ -23,7 +23,7 @@ public class RegistrationController {
 		return userService.findFllUsers();
 	}
 
-	@PostMapping(value = "/post", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping
 	public @ResponseBody User save(@RequestBody User user){
 
 		LOGGER.info(user.getPassword() + " " + user.getLogin());

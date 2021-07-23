@@ -2,8 +2,10 @@ package ru.assaulov.utilitybills2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.assaulov.utilitybills2.model.enums.Gender;
@@ -19,6 +21,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @ToString(of = {"userId", "login"})
+@EqualsAndHashCode(of = {"userId"})
+@SuperBuilder(toBuilder = true)
 public class User implements UserDetails {
 
 	@Id
