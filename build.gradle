@@ -30,14 +30,18 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'javax.xml.bind:jaxb-api'
     implementation  'org.springframework.session:spring-session-jdbc'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+}
+
+dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
     liquibaseRuntime  'org.liquibase:liquibase-core'
     liquibaseRuntime 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
 liquibase {
