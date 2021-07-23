@@ -11,7 +11,7 @@ module.exports = merge(common, {
         allowedHosts: [
             'localhost:8888'
         ],
-        stats: 'errors-only',
+        stats: 'normal',
         clientLogLevel: 'error',
 
     },
