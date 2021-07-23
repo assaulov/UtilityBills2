@@ -6,7 +6,7 @@ plugins {
 }
 apply plugin: "org.liquibase.gradle"
 group = 'ru.assaulov'
-version = '0.0.20'
+version = '0.4.0'
 sourceCompatibility = '11'
 
 configurations {
@@ -42,7 +42,7 @@ dependencies {
 
 liquibase {
     activities {
-        main {
+        main{
             File propsFile = new File("${project.rootDir}/src/main/resources/liquibase.properties")
             Properties properties = new Properties()
             properties.load(new FileInputStream(propsFile))
