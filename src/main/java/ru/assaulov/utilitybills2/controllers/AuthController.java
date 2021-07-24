@@ -1,5 +1,7 @@
 package ru.assaulov.utilitybills2.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.payload.request.LoginRequest;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
+import ru.assaulov.utilitybills2.payload.respose.MessageResponse;
 import ru.assaulov.utilitybills2.payload.respose.UserResponse;
 import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImpl;
 
@@ -17,6 +20,7 @@ import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImpl;
 @RestController
 @RequestMapping("auth")
 public class AuthController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
 	private final AuthenticationManager authenticationManager;
 	private final UserServiceImpl userService;
@@ -34,15 +38,12 @@ public class AuthController {
 				new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		User userDetails = (User) authentication.getPrincipal();
-		return ResponseEntity.ok(new UserResponse(
-				userDetails.getLogin(),
-				userDetails.getFullName(),
-				userDetails.getGender().getDescription(),
-				userDetails.getEmail()));
+		return ResponseEntity.ok(new MessageResponse(userDetails.getLogin() + " login successfully!"));
 	}
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> save(@RequestBody RegistrationRequest user){
+		LOGGER.info(user.toString());
 		return userService.saveUser(user);
 	}
 }

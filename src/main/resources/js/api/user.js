@@ -1,5 +1,5 @@
 import Vue from 'vue'
-const users = Vue.resource('/auth/signin')
 export default {
-    add: user => users.save({}, user),
+    login: userToLogin =>Vue.http.post('/auth/signin', userToLogin),
+    registration: userToRegistration => Vue.http.post('/auth/signup', userToRegistration)
 }
