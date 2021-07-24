@@ -4,6 +4,9 @@
       <v-form ref="registerForm" v-model="valid" lazy-validation>
         <v-row>
           <v-col cols="12" sm="6" md="6">
+            <v-text-field v-model="login" :rules="[rules.required]" label="Логин" maxlength="20" required></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" md="6">
             <v-text-field v-model="firstName" :rules="[rules.required]" label="Имя" maxlength="20" required></v-text-field>
           </v-col>
           <v-col cols="12" sm="6" md="6">
@@ -20,8 +23,9 @@
           </v-col>
           <v-col>
           <v-select
-              v-model="select"
-              :items="items"
+              v-model="genders.abbr"
+              :items="genders"
+              item-value="abbr" item-text="gender"
               :rules="[v => !!v || 'Item is required']"
               label="Пол"
               required
@@ -29,7 +33,7 @@
           </v-col>
           <v-spacer></v-spacer>
           <v-col class="d-flex ml-auto" cols="12" sm="3" xsm="12">
-            <v-btn x-large block :disabled="!valid" color="success">Register</v-btn>
+            <v-btn x-large block :disabled="!valid" @click="validate" color="success">Register</v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -38,42 +42,50 @@
 </template>
 
 <script>
+import {mapActions, mapMutations, mapState} from "vuex";
+
 export default {
   name: "RegistrationForm",
   computed: {
+    ...mapState(['isRegistrationFormVisible']),
     passwordMatch() {
       return () => this.password === this.verify || "Password must match";
     }
   },
   methods: {
-    // validate() {
-    //   if (this.$refs.loginForm.validate()) {
-    //     // submit form to server/API here...
-    //   }
-    // },
-  },
+    ...mapActions(['registerUserAction']),
+    ...mapMutations(['registerForm']),
+
+    async validate() {
+      await this.registerUserAction({
+        login: this.login,
+        password: this.password,
+        firstName:this.firstName,
+        lastName:this.lastName,
+        gender: this.genders.abbr,
+        email: this.email
+      })
+      this.registerForm(false)
+      await this.$router.push("/auth")
+      }
+    },
   data() {
     return {
       dialog: true,
       valid: true,
+      login:"",
       firstName: "",
       lastName: "",
       email: "",
       password: "",
       verify: "",
-      loginPassword: "",
-      loginEmail: "",
       select: null,
-      items: [
-        'М',
-        'Ж'
-      ],
-      loginEmailRules: [
-        v => !!v || "Required",
-        v => /.+@.+\..+/.test(v) || "E-mail must be valid"
+      genders: [
+        {gender: 'Ж', abbr: 'FEMALE'},
+        {gender: 'М', abbr: 'MALE'}
       ],
       emailRules: [
-        v => !!v || "Required",
+        v => !!v |41| "Required",
         v => /.+@.+\..+/.test(v) || "E-mail must be valid"
       ],
 

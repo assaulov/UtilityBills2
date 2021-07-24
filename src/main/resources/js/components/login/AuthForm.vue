@@ -24,11 +24,11 @@
 </template>
 
 <script>
-import {mapActions, mapState} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 export default {
   name: "AuthForm",
   computed: {
-    ...mapState(['loggedIn'])
+    ...mapState(['isLoggedIn'])
   },
   data() {
     return {
@@ -43,8 +43,9 @@ export default {
         login: this.login,
         password: this.password
       })
-      if(this.loggedIn){
-      await  this.$router.push("/")
+
+      if(this.isLoggedIn){
+      await this.$router.push("/")
       }
     },
   }
