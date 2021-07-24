@@ -21,6 +21,9 @@
 
 * Vue.js
 * Vuetify
+* Vuex
+* VueRouter
+* VueResource
 * Webpack
 * Sock.js
 * Stomp.js
