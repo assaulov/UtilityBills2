@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				.firstName(request.getFirstName())
 				.lastName(request.getLastName())
 				.password(bCryptPasswordEncoder.encode(request.getPassword()))
-				.gender(Gender.valueOf(request.getGender()))
+				.gender(Gender.valueOf(genderNotNull(request.getGender())))
 				.email(request.getEmail())
 				.roles(Collections.singleton(Role.ROLE_USER)).build();
 		userRepository.save(userToSave);
@@ -57,8 +57,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User findUserById(long userId) {
-		User user = userRepository.getById(userId);
-		return user!=null ? user : null;
+		return userRepository.getById(userId);
 	}
 
 	@Override
@@ -72,5 +71,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		if(user!=null){
 			userRepository.deleteById(userId);
 		}
+	}
+
+	private String genderNotNull(String gender){
+		String none= "NONE";
+		if(gender==null){
+			return none;
+		}
+		return gender;
+
 	}
 }
