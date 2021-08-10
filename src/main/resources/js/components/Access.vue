@@ -107,6 +107,8 @@ export default {
         login: this.login,
         password: this.loginPassword
       })
+      this.login = ''
+      this.password = ''
       this.registerForm(false)
     },
     async validate() {
@@ -118,6 +120,13 @@ export default {
         gender: this.genders.abbr,
         email: this.email
       })
+      this.login = ''
+      this.password = ''
+      this.firstName = ''
+      this.lastName = ''
+      this.genders.abbr = ''
+      this.email = ''
+
       this.registerForm(false)
     },
     closeForm(){
