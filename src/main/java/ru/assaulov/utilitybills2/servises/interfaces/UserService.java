@@ -7,8 +7,13 @@ import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import java.util.List;
 
 public interface UserService {
-	 ResponseEntity<?> saveUser(RegistrationRequest userToSave);
-	 User findUserById(long userId);
-	 List<User> findFllUsers();
-	 void deleteUser(long userId);
+	ResponseEntity<?> saveUser(RegistrationRequest userToSave);
+
+	User findUserById(long userId);
+
+	User findUserByLogin(String login);
+
+	List<User> findAllUsers();
+
+	ResponseEntity<?> deleteUser(long userId);
 }
