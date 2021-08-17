@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
@@ -57,20 +58,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User findUserById(long userId) {
-		return userRepository.getById(userId);
+		return userRepository.findById(userId).get();
 	}
 
 	@Override
-	public List<User> findFllUsers() {
+	public User findUserByLogin(String login) {
+		return userRepository.findByLoginIgnoreCase(login);
+	}
+
+	@Override
+	public List<User> findAllUsers() {
 		return userRepository.findAll();
 	}
 
 	@Override
-	public void deleteUser(long userId) {
+	public ResponseEntity<?> deleteUser(long userId) {
 		User user = userRepository.getById(userId);
 		if(user!=null){
 			userRepository.deleteById(userId);
+			return ResponseEntity.ok(new MessageResponse("User deleted successfully!"));
 		}
+		return ResponseEntity
+				.badRequest()
+				.body(new MessageResponse("Error: User is already deleted or does not exist!"));
 	}
 
 	private String genderNotNull(String gender){

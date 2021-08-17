@@ -5,21 +5,24 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
 
 import javax.persistence.*;
+import javax.swing.text.Utilities;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-@Entity
-@Table(name = "t_users")
-@NoArgsConstructor
 @Data
-@ToString(of = {"userId", "login", "firstName", "lastName", "gender", "email"})
-@EqualsAndHashCode(of = {"userId"})
+@Entity
+@NoArgsConstructor
+@Table(name = "t_users")
 @SuperBuilder(toBuilder = true)
+@EqualsAndHashCode(of = {"userId", "login", "firstName", "lastName", "gender", "email"})
+@ToString(of = {"userId", "login", "firstName", "lastName", "gender", "email"})
 public class User implements UserDetails {
 
 	@Id
@@ -41,7 +44,11 @@ public class User implements UserDetails {
 	@CollectionTable(name = "t_user_role", joinColumns = @JoinColumn(name = "user_id"))
 	@Enumerated(EnumType.STRING)
 	@JsonIgnore
+	@Builder.Default
 	private Set<Role> roles = new HashSet<>();
+
+//	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL,  mappedBy = "userId")
+//	private List<Meters> metersList;
 
 	@JsonIgnore
 	public String getFullName() {

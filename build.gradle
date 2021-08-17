@@ -6,7 +6,7 @@ plugins {
 }
 apply plugin: "org.liquibase.gradle"
 group = 'ru.assaulov'
-version = '0.5.0'
+version = '0.9.6'
 sourceCompatibility = '11'
 
 configurations {
@@ -32,7 +32,9 @@ dependencies {
     implementation  'org.springframework.session:spring-session-jdbc'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
 }
 
 dependencies {
