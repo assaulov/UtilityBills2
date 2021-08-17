@@ -44,6 +44,7 @@ public class User implements UserDetails {
 	@CollectionTable(name = "t_user_role", joinColumns = @JoinColumn(name = "user_id"))
 	@Enumerated(EnumType.STRING)
 	@JsonIgnore
+	@Builder.Default
 	private Set<Role> roles = new HashSet<>();
 
 //	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL,  mappedBy = "userId")
