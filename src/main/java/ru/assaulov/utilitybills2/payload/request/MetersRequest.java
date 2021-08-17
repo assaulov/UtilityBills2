@@ -6,9 +6,9 @@ import java.time.LocalDate;
 
 @Data
 public class MetersRequest {
-	private long userId;
+	private String userLogin;
 	private long meterId;
-	private LocalDate dateOfWriteUtilityMeter;
+	private LocalDate meterDataWrite;
 	private LocalDate dateFrom;
 	private LocalDate dateTo;
 }

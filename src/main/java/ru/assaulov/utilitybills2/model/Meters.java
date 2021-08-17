@@ -38,7 +38,7 @@ public class Meters {
 
 	@ManyToOne (fetch=FetchType.LAZY, optional=true)
 	@JoinColumn(name = "user_id",  insertable = false, updatable = false)
-	private User userId;
+	private User user;
 
 
 }
