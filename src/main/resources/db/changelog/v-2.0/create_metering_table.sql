@@ -7,7 +7,7 @@ CREATE SEQUENCE public.t_metering_meter_id_seq
 
 CREATE TABLE t_metering (
                             meter_id bigint NOT NULL DEFAULT nextval('t_metering_meter_id_seq'::regclass),
-                            meter_data_of_write date,
+                            meter_date_of_write date,
                             cold_water double precision,
                             hot_water double precision,
                             electricity double precision,

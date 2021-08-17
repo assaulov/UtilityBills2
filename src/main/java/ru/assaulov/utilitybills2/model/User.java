@@ -9,8 +9,10 @@ import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
 
 import javax.persistence.*;
+import javax.swing.text.Utilities;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -42,6 +44,9 @@ public class User implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	@JsonIgnore
 	private Set<Role> roles = new HashSet<>();
+
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL,  mappedBy = "userId")
+	private List<Meters> metersList;
 
 	@JsonIgnore
 	public String getFullName() {
