@@ -1,6 +1,9 @@
 package ru.assaulov.utilitybills2;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.TestPropertySources;
 
@@ -8,6 +11,7 @@ import org.springframework.test.context.TestPropertySources;
 		@TestPropertySource("classpath:application.properties"),
 		@TestPropertySource("classpath:liquibase.properties")})
 public class ConfigTest {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigTest.class);
 
 	static {
 		System.setProperty("spring.datasource.url", System.getenv("DB_URL"));
@@ -16,22 +20,23 @@ public class ConfigTest {
 
 	}
 	public static long userId;
-	public String login;
-	public String firstName;
-	public String lastName;
-	public String password;
-	public String gender;
-	public String email;
+	public static String login;
+	public static String firstName;
+	public static String lastName;
+	public static String password;
+	public static String gender;
+	public static String email;
 
 
-	@BeforeEach
-	public void setUp() {
+	@BeforeAll
+	public static void setUp() {
 		login = "test1";
 		firstName = "Test";
 		lastName = "Testov";
 		password = "1234";
 		gender = "MALE";
 		email = "test@mail.ru";
+		LOGGER.info("User field is set up");
 	}
 	
 }
