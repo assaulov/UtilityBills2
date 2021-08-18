@@ -11,12 +11,10 @@ import ru.assaulov.utilitybills2.model.enums.Role;
 
 import javax.persistence.*;
 import javax.swing.text.Utilities;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "t_users")
@@ -27,7 +25,7 @@ public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id", nullable = false)
+	@Column(name = "user_id", nullable = false, unique = true)
 	private Long userId;
 	@Column(name = "login", nullable = false)
 	private String login;
@@ -47,8 +45,10 @@ public class User implements UserDetails {
 	@Builder.Default
 	private Set<Role> roles = new HashSet<>();
 
-//	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL,  mappedBy = "userId")
-//	private List<Meters> metersList;
+	@Builder.Default
+	@OneToMany()
+	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	private List<Meters> metersList = new ArrayList<>();
 
 	@JsonIgnore
 	public String getFullName() {

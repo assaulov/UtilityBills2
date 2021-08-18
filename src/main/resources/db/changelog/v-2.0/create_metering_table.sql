@@ -17,7 +17,6 @@ CREATE TABLE t_metering (
                             CONSTRAINT fk_t_users
                                     FOREIGN KEY (user_id)
                                         REFERENCES t_users(user_id)
-
-
-
+                                        ON DELETE CASCADE
+                                        ON UPDATE CASCADE
 );

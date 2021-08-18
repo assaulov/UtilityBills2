@@ -10,12 +10,11 @@ import java.util.List;
 
 public interface MetersService {
 
-	ResponseEntity<?> saveMeter(Meters meter);
+	ResponseEntity<?> saveMeter(MetersRequest meterRequest);
 	void deleteMeterById(MetersRequest request);
 	void updateMeterById(Meters meter);
 	Meters findById(MetersRequest request);
-	List<Meters> findAll(MetersRequest request);
 	List<Meters> findMetersByDate(MetersRequest request);
 	List<Meters> findMetersByPeriod(MetersRequest request);
-
+	List<Meters> findAllByUser_UserId(MetersRequest request);
 }

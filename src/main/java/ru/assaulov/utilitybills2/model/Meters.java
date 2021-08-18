@@ -1,10 +1,7 @@
 package ru.assaulov.utilitybills2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -13,7 +10,8 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "t_metering")
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @ToString
 @EqualsAndHashCode(of = {"meterId", "meterDataWrite"})
 @SuperBuilder(toBuilder = true)
@@ -36,8 +34,8 @@ public class Meters {
 	private Double electricity;
 	private Double gas;
 
-	@ManyToOne (fetch=FetchType.LAZY, optional=true)
-	@JoinColumn(name = "user_id",  insertable = false, updatable = false)
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 
