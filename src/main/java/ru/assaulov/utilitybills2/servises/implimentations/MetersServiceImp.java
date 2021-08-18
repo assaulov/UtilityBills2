@@ -18,9 +18,9 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MetersServiceImpl implements MetersService {
+public class MetersServiceImp implements MetersService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MetersServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MetersServiceImp.class);
 
 	private final UserRepository userRepository;
 	private final MetersRepository metersRepository;

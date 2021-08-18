@@ -1,18 +1,15 @@
 package ru.assaulov.utilitybills2.configs;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImpl;
-import ru.assaulov.utilitybills2.servises.interfaces.UserService;
+import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 
 
 @Configuration
@@ -20,7 +17,7 @@ import ru.assaulov.utilitybills2.servises.interfaces.UserService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	UserServiceImpl userService;
+	UserServiceImp userService;
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {

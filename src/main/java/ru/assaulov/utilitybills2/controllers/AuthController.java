@@ -13,8 +13,7 @@ import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.payload.request.LoginRequest;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import ru.assaulov.utilitybills2.payload.respose.MessageResponse;
-import ru.assaulov.utilitybills2.payload.respose.UserResponse;
-import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImpl;
+import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -23,10 +22,10 @@ public class AuthController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
 	private final AuthenticationManager authenticationManager;
-	private final UserServiceImpl userService;
+	private final UserServiceImp userService;
 
 	@Autowired
-	public AuthController(AuthenticationManager authenticationManager, UserServiceImpl userService) {
+	public AuthController(AuthenticationManager authenticationManager, UserServiceImp userService) {
 		this.authenticationManager = authenticationManager;
 		this.userService = userService;
 	}
