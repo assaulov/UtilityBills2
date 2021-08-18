@@ -12,7 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.TestPropertySources;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
-import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImpl;
+import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 
 import java.util.List;
 
@@ -20,39 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-@TestPropertySources({
-		@TestPropertySource("classpath:application.properties"),
-		@TestPropertySource("classpath:liquibase.properties")})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserServiceImpTest {
-
-	static {
-		System.setProperty("spring.datasource.url", System.getenv("DB_URL"));
-		System.setProperty("spring.datasource.username", System.getenv("POSTGRES_USER"));
-		System.setProperty("spring.datasource.password", System.getenv("POSTGRES_PASSWORD"));
-	}
+public class UserServiceImpTest extends ConfigTest{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpTest.class);
 
 	@Autowired
-	private UserServiceImpl userService;
-	private static long userId;
-	private String login;
-	private String firstName;
-	private String lastName;
-	private String password;
-	private String gender;
-	private String email;
-
-	@BeforeEach
-	public void setUp() {
-		login = "test1";
-		firstName = "Test";
-		lastName = "Testov";
-		password = "1234";
-		gender = "MALE";
-		email = "test@mail.ru";
-	}
+	private UserServiceImp userService;
 
 	@Test
 	@Order(1)

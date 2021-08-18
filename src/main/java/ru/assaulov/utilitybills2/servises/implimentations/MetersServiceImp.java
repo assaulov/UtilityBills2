@@ -18,20 +18,26 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MetersServiceImpl implements MetersService {
+public class MetersServiceImp implements MetersService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MetersServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MetersServiceImp.class);
 
 	private final UserRepository userRepository;
 	private final MetersRepository metersRepository;
 
 	@Override
-	public ResponseEntity<?> saveMeter(Meters meter) {
-		User user = userRepository.findByLoginIgnoreCase(meter.getUser().getLogin());
-		meter.setMeterDataWrite(LocalDate.now());
-		meter.setUser(user);
-		metersRepository.save(meter);
-		LOGGER.info(meter + "successfully saved in DB");
+	public ResponseEntity<?> saveMeter(MetersRequest meterRequest) {
+		User user = userRepository.findByLoginIgnoreCase(meterRequest.getUserLogin());
+		Meters meterToSave = new Meters().toBuilder()
+				.user(user)
+				.meterDataWrite(LocalDate.now())
+				.coldWater(meterRequest.getColdWater())
+				.hotWater(meterRequest.getHotWater())
+				.electricity(meterRequest.getElectricity())
+				.gas(meterRequest.getGas())
+				.build();
+		metersRepository.save(meterToSave);
+		LOGGER.info(meterToSave + "successfully saved in DB");
 		return ResponseEntity.ok(new MessageResponse("Meters saved successfully!"));
 	}
 
@@ -61,8 +67,9 @@ public class MetersServiceImpl implements MetersService {
 	}
 
 	@Override
-	public List<Meters> findAll(MetersRequest request) {
-		return metersRepository.findAll();
+	public List<Meters> findAllByUser_UserId(MetersRequest metersRequest) {
+		long userId = userRepository.findByLoginIgnoreCase(metersRequest.getUserLogin()).getUserId();
+		return metersRepository.findAllByUser_UserId(userId);
 	}
 
 	@Override
