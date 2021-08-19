@@ -24,8 +24,6 @@
 * VueRouter
 * VueResource
 * Webpack
-* Sock.js
-* Stomp.js
 
 ## Планируется реализовать
 
