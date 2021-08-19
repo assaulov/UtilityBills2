@@ -12,7 +12,6 @@
 * Spring Security
 * Spring Data JPA
 * Spring Session JDBC
-* Spring WebSocket
 * Lombok
 * PostgreSQL
 * Liquibase
