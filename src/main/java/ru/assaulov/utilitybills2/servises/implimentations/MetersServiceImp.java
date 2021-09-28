@@ -42,6 +42,13 @@ public class MetersServiceImp implements MetersService {
 	}
 
 	@Override
+	public ResponseEntity<?> saveMeter(Meters meters) {
+		metersRepository.save(meters);
+		LOGGER.info(meters + "successfully saved in DB");
+		return ResponseEntity.ok(new MessageResponse("Meters saved successfully!"));
+	}
+
+	@Override
 	public void deleteMeterById(MetersRequest request) {
 		Optional<Meters> meter = metersRepository.findById(request.getMeterId());
 		if (meter.isPresent()) metersRepository.delete(meter.get());
@@ -74,12 +81,15 @@ public class MetersServiceImp implements MetersService {
 
 	@Override
 	public List<Meters> findMetersByDate(MetersRequest request) {
-		return metersRepository.findUtilitiesByDate(request.getMeterDataWrite());
+		User user = userRepository.findByLoginIgnoreCase(request.getUserLogin());
+		return metersRepository.findUtilitiesByDate(request.getMeterDataWrite(), user);
 	}
 
 	@Override
 	public List<Meters> findMetersByPeriod(MetersRequest request) {
+		LOGGER.info(request.toString());
 		User user = userRepository.findByLoginIgnoreCase(request.getUserLogin());
+		LOGGER.info(user.toString());
 		return metersRepository.findUtilitiesByPeriod(request.getDateFrom(), request.getDateTo(), user);
 	}
 }

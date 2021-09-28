@@ -6,17 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import ru.assaulov.utilitybills2.model.Meters;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.payload.request.MetersRequest;
-import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import ru.assaulov.utilitybills2.servises.implimentations.MetersServiceImp;
 import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
+
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,11 +24,9 @@ public class MetersServiceImpTest extends ConfigTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetersServiceImpTest.class);
 
-	private Double coldWater = 149.9;
-	private Double hotWater = 0.0;
-	private Double electricity = 2096.0;
-	private Double gas = 209.9;
-	private MetersRequest meter;
+
+	private final MetersRequest meterRequest = new MetersRequest();
+	private final List<Meters> generatedMeters = new ArrayList<>();
 
 	@Autowired
 	MetersServiceImp metersService;
@@ -41,16 +36,13 @@ public class MetersServiceImpTest extends ConfigTest {
 
 	@BeforeAll
 	public void setData(){
-		RegistrationRequest request = new RegistrationRequest(login,password, firstName, lastName, gender, email);
 		userService.saveUser(request);
-		meter = new MetersRequest();
-		meter.setMeterDataWrite(LocalDate.now());
-		meter.setColdWater(coldWater);
-		meter.setHotWater(hotWater);
-		meter.setGas(gas);
-		meter.setElectricity(electricity);
-		meter.setUserLogin(login);
-		LOGGER.info("Data for test is set");
+		User user = userService.findUserByLogin(login);
+		meterRequest.setUserLogin(user.getLogin());
+		for (int i = 0; i < 5 ; i++) {
+			generatedMeters.add(createMeter(true, user));
+		}
+		generatedMeters.add(createMeter(false, user));
 	}
 
 	@AfterAll
@@ -64,46 +56,64 @@ public class MetersServiceImpTest extends ConfigTest {
 	@Order(1)
 	public void testSaveMeter(){
 		LOGGER.info("Test to save meters data");
-		ResponseEntity<?> messageResponse = metersService.saveMeter(meter);
-		LOGGER.info("Response from server: " + messageResponse.toString());
-		assertTrue(messageResponse.toString().contains("Meters saved successfully!"));
+		for (Meters meter: generatedMeters) {
+			ResponseEntity<?> messageResponse = metersService.saveMeter(meter);
+			LOGGER.info("Response from server: " + messageResponse.toString());
+			assertTrue(messageResponse.toString().contains("Meters saved successfully!"));
+		}
 	}
 
 	@Test
 	@Order(2)
 	public void testFindAllByUser_UserId(){
 		LOGGER.info("Test show meters data by user ID");
-		List<Meters> meters = metersService.findAllByUser_UserId(meter);
-		meter.setMeterId(meters.get(0).getMeterId());
-		LOGGER.info(Arrays.toString(meters.toArray()));
-		assertFalse(meters.isEmpty());
-		assertEquals(1, meters.size());
+		List<Meters> metersFromDB = metersService.findAllByUser_UserId(meterRequest);
+		assertIterableEquals(generatedMeters, metersFromDB);
 	}
 
 	@Test
 	@Order(3)
-	public void testIsMeterInDBHasCorrectData(){
-		LOGGER.info("Test show meters data saved in DB correct");
-		Meters meterFromDB = metersService.findById(meter);
-		assertEquals(meter.getMeterDataWrite(), meterFromDB.getMeterDataWrite());
-		assertEquals(meter.getColdWater(), meterFromDB.getColdWater());
-		assertEquals(meter.getHotWater(), meterFromDB.getHotWater());
-		assertEquals(meter.getElectricity(), meterFromDB.getElectricity());
-		assertEquals(meter.getGas(), meterFromDB.getGas());
-		assertEquals(meter.getUserLogin(), meterFromDB.getUser().getLogin());
-		LOGGER.info("Test data equals data from DB");
+	public void testFindMetersByPeriod(){
+		LOGGER.info("Test show meters data by period");
+		MetersRequest metersRequest = new MetersRequest();
+		metersRequest.setDateFrom(LocalDate.now().minusDays(90));
+		metersRequest.setDateTo(LocalDate.now());
+		metersRequest.setUserLogin(login);
+
+		List<Meters> metersFormDb = metersService.findMetersByPeriod(metersRequest);
+
+		assertTrue(metersFormDb.size()>=6,"Колличестов показаний не соответствует ожидаемому");
+
+		for (Meters meter: metersFormDb) {
+			assertTrue(meter.getMeterDataWrite().isBefore(LocalDate.now().plusDays(1)), "Показание не входит в данный период (позже)");
+			assertTrue(meter.getMeterDataWrite().isAfter(LocalDate.now().minusDays(90)),"Показание не входит в данный период (раньше)");
+		}
 
 	}
 	@Test
 	@Order(4)
-	public void testDeleteByMeterId(){
-		LOGGER.info("Test delete meters data by meter ID");
-		metersService.deleteMeterById(meter);
-	assertThrows(NoSuchElementException.class, () -> {
-		LOGGER.info("Meters data with " + meter.getMeterId() + " is not present in DB");
-		metersService.findById(meter);
-	});
+	public void testFindMetersByDate(){
+		LOGGER.info("Test show meters data by period");
+		MetersRequest metersRequest = new MetersRequest();
+		LocalDate dateExpected= LocalDate.now();
+		metersRequest.setMeterDataWrite(dateExpected);
+		metersRequest.setUserLogin(login);
+		List<Meters> metersFormDb = metersService.findMetersByDate(metersRequest);
+		assertEquals(dateExpected, metersFormDb.get(0).getMeterDataWrite(), "Показания по запрашиваемой дате отсутствуют");
+
 	}
 
+	@Test
+	@Order(5)
+	public void testDeleteByMeterId(){
+		LOGGER.info("Test delete meters data by meter ID");
+		List<Meters> meters = metersService.findAllByUser_UserId(meterRequest);
+		meterRequest.setMeterId(meters.get(0).getMeterId());
+		metersService.deleteMeterById(meterRequest);
+	assertThrows(NoSuchElementException.class, () -> {
+		LOGGER.info("Meters data with " + meterRequest.getMeterId() + " is not present in DB");
+		metersService.findById(meterRequest);
+	});
+	}
 
 }
