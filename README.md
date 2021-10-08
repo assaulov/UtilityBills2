@@ -12,7 +12,6 @@
 * Spring Security
 * Spring Data JPA
 * Spring Session JDBC
-* Spring WebSocket
 * Lombok
 * PostgreSQL
 * Liquibase
@@ -25,8 +24,6 @@
 * VueRouter
 * VueResource
 * Webpack
-* Sock.js
-* Stomp.js
 
 ## Планируется реализовать
 
