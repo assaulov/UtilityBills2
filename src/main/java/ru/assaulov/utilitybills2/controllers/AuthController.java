@@ -18,6 +18,8 @@ import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import ru.assaulov.utilitybills2.payload.respose.MessageResponse;
 import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 
+import java.util.Optional;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("auth")
@@ -46,8 +48,8 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<User> save(@RequestBody RegistrationRequest request){
 		LOGGER.info(request.toString());
-		return userService.save(request).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
-				String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), request.toString())
+		return Optional.of(userService.save(request)).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
+				String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), request)
 		));
 	}
 }
