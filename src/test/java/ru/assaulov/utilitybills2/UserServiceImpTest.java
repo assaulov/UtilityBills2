@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.assaulov.utilitybills2.model.User;
+import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import ru.assaulov.utilitybills2.repositories.UserRepository;
@@ -77,6 +78,27 @@ public class UserServiceImpTest extends ConfigTest{
 		given(userRepository.findById(any(Long.class))).willReturn(Optional.of(user));
 		Optional<User> userFromDb = userService.findUserById(15L);
 		assertTrue(userFromDb.isPresent());
+	}
+
+	@Test
+	public void  testUpdateUser(){
+		User fieldsUpdate = new User().toBuilder()
+				.email("novii@mail.ru")
+				.firstName("Новое Имя")
+				.lastName("Новая Фамилия")
+				.gender(Gender.FEMALE)
+				.password("новый_пароль")
+				.build();
+		user.setUserId(15L);
+		fieldsUpdate.setUserId(15L);
+		given(userRepository.findById(any(Long.class))).willReturn(Optional.of(user));
+		userService.update(fieldsUpdate);
+		User updatedUser = userService.findUserById(user.getUserId()).get();
+		assertEquals(user.getEmail(), updatedUser.getEmail());
+		assertEquals(user.getFirstName(), updatedUser.getFirstName());
+		assertEquals(user.getLastName(), updatedUser.getLastName());
+		assertEquals(user.getGender(), updatedUser.getGender());
+		assertNotEquals(bCryptPasswordEncoder.encode(user.getPassword()), updatedUser.getPassword());
 	}
 
 	@Test
