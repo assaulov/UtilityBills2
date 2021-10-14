@@ -11,6 +11,7 @@ import java.util.List;
 public interface MetersService {
 
 	ResponseEntity<?> saveMeter(MetersRequest meterRequest);
+	ResponseEntity<?> saveMeter(Meters meters);
 	void deleteMeterById(MetersRequest request);
 	void updateMeterById(Meters meter);
 	Meters findById(MetersRequest request);

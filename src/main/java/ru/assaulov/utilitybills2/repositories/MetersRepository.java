@@ -12,8 +12,9 @@ import java.util.List;
 
 public interface MetersRepository extends JpaRepository<Meters, Long> {
 
-	@Query(value = "SELECT mt FROM Meters mt WHERE mt.meterDataWrite = :meterDataWrite")
-	List<Meters> findUtilitiesByDate(@Param("meterDataWrite") LocalDate meterDataWrite);
+	@Query(value = "SELECT mt FROM Meters mt WHERE mt.meterDataWrite = :meterDataWrite AND mt.user = :user")
+	List<Meters> findUtilitiesByDate(@Param("meterDataWrite") LocalDate meterDataWrite,
+										@Param("user") User user);
 
 	@Query(value = "SELECT mt FROM Meters mt WHERE mt.meterDataWrite >= :dateFrom AND mt.meterDataWrite <= :dateTo AND mt.user = :user")
 	List<Meters> findUtilitiesByPeriod(@Param("dateFrom") LocalDate dateFrom,

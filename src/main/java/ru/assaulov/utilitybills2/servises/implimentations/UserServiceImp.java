@@ -3,22 +3,23 @@ package ru.assaulov.utilitybills2.servises.implimentations;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.assaulov.utilitybills2.exeptions.BaseException;
+import ru.assaulov.utilitybills2.exeptions.ErrorType;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
-import ru.assaulov.utilitybills2.payload.respose.MessageResponse;
 import ru.assaulov.utilitybills2.repositories.UserRepository;
 import ru.assaulov.utilitybills2.servises.interfaces.UserService;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,17 +32,14 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		LOGGER.info("Search user by username " + username);
+
 		return userRepository.findByLoginIgnoreCase(username);
 	}
 
 	@Override
-	public ResponseEntity<?> saveUser(RegistrationRequest request) {
-		User userInDb = userRepository.findByLoginIgnoreCase(request.getLogin());
-		if(userInDb!= null){
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
-		}
+	public User save(RegistrationRequest request) {
+		LOGGER.info("Try save user in database");
 		User userToSave = new User().toBuilder()
 				.login(request.getLogin())
 				.firstName(request.getFirstName())
@@ -52,34 +50,45 @@ public class UserServiceImp implements UserService, UserDetailsService {
 				.roles(Collections.singleton(Role.ROLE_USER)).build();
 		userRepository.save(userToSave);
 		LOGGER.info(userToSave+ "save in database");
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		LOGGER.info("Registration successful");
+		return userToSave;
 	}
 
 	@Override
-	public User findUserById(long userId) {
-		return userRepository.findById(userId).get();
+	public Optional<User> findUserById(long userId) {
+		LOGGER.info("Search user by ID " + userId);
+		return userRepository.findById(userId);
 	}
 
 	@Override
-	public User findUserByLogin(String login) {
-		return userRepository.findByLoginIgnoreCase(login);
+	public Boolean update(User user) {
+		LOGGER.info("Try to update user " + user);
+		return userRepository.findById(user.getUserId()).map(u -> {
+			u.setFirstName(user.getFirstName());
+			u.setLastName(user.getLastName());
+			u.setEmail(user.getEmail());
+			u.setGender(user.getGender());
+			u.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+			LOGGER.info("User fields was updated");
+			return true;
+		}).orElse(false);
 	}
 
 	@Override
 	public List<User> findAllUsers() {
+		LOGGER.info("Try find all users");
+
 		return userRepository.findAll();
 	}
 
 	@Override
-	public ResponseEntity<?> deleteUser(long userId) {
-		User user = userRepository.getById(userId);
-		if(user!=null){
-			userRepository.deleteById(userId);
-			return ResponseEntity.ok(new MessageResponse("User deleted successfully!"));
-		}
-		return ResponseEntity
-				.badRequest()
-				.body(new MessageResponse("Error: User is already deleted or does not exist!"));
+	public Boolean deleteUserById(long userId) {
+		LOGGER.info("Try to delete user by ID "+ userId);
+		User userFromDb = findUserById(userId).orElseThrow(()-> new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND.getDescription(), userId)));
+		LOGGER.info("User with ID "+ userId + ": " + userFromDb.toString());
+		userRepository.delete(userFromDb);
+		LOGGER.info("User delete successful");
+		return true;
 	}
 
 	private String genderNotNull(String gender){
