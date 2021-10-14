@@ -2,60 +2,42 @@ package ru.assaulov.utilitybills2;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.TestPropertySources;
 import ru.assaulov.utilitybills2.model.Meters;
 import ru.assaulov.utilitybills2.model.User;
+import ru.assaulov.utilitybills2.model.enums.Gender;
+import ru.assaulov.utilitybills2.model.enums.Role;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import ru.assaulov.utilitybills2.repositories.MetersRepository;
 import ru.assaulov.utilitybills2.repositories.UserRepository;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Random;
 
-@TestPropertySources({
-		@TestPropertySource("classpath:application.properties"),
-		@TestPropertySource("classpath:liquibase.properties")})
+//@TestPropertySources({
+//		@TestPropertySource("classpath:application.properties"),
+//		@TestPropertySource("classpath:liquibase.properties")})
+@ExtendWith(MockitoExtension.class)
 public class ConfigTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigTest.class);
 
-	static {
-		System.setProperty("spring.datasource.url", System.getenv("DB_URL"));
-		System.setProperty("spring.datasource.username", System.getenv("POSTGRES_USER"));
-		System.setProperty("spring.datasource.password", System.getenv("POSTGRES_PASSWORD"));
+//	static {
+//		System.setProperty("spring.datasource.url", System.getenv("DB_URL"));
+//		System.setProperty("spring.datasource.username", System.getenv("POSTGRES_USER"));
+//		System.setProperty("spring.datasource.password", System.getenv("POSTGRES_PASSWORD"));
+//
+//	}
 
-	}
-
-	@Autowired
-	UserRepository userRepository;
-	@Autowired
-	MetersRepository metersRepository;
-
-	public static long userId;
-	public static String login;
-	public static String firstName;
-	public static String lastName;
-	public static String password;
-	public static String gender;
-	public static String email;
-	public static RegistrationRequest request;
-
-	@BeforeAll
-	public static void setUp() {
-		login = "test1";
-		firstName = "Test";
-		lastName = "Testov";
-		password = "1234";
-		gender = "MALE";
-		email = "test@mail.ru";
-		LOGGER.info("User field is set up");
-		request = new RegistrationRequest(login,password, firstName, lastName, gender, email);
-
-	}
 
 	private static double randomValue(double rangeMin, double rangeMax){
 		Random r = new Random();
@@ -93,6 +75,29 @@ public class ConfigTest {
 			meter.setMeterDataWrite(LocalDate.now());
 		}
 		return meter;
+	}
+
+	// TODO : Сделать генератор рандомных данных
+	public RegistrationRequest createRequest(){
+		return new RegistrationRequest().toBuilder()
+				.login("testUser")
+				.firstName("Test")
+				.lastName("Testov")
+				.email("test_user@mail.ru")
+				.gender("MALE")
+				.password("qwerty1234")
+				.build();
+	}
+
+	public User createTestUser(RegistrationRequest request){
+		return new User().toBuilder()
+				.login(request.getLogin())
+				.firstName(request.getFirstName())
+				.lastName(request.getLastName())
+				.password(request.getPassword())
+				.gender(Gender.valueOf(request.getGender()))
+				.email(request.getEmail())
+				.roles(Collections.singleton(Role.ROLE_USER)).build();
 	}
 	
 }
