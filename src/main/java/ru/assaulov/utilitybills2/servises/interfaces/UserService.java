@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-	Optional<User> save(RegistrationRequest request);
+
+	User save(RegistrationRequest request);
 
 	Optional<User> findUserById(long userId);
 
-	Optional<User> update(User user);
+	Boolean update(User user);
 
 	List<User> findAllUsers();
 
-	Boolean  deleteUser(long userId);
+	Boolean deleteUserById(long userId);
+
 }
