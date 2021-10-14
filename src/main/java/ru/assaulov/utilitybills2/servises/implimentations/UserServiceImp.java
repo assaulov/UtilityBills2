@@ -3,22 +3,23 @@ package ru.assaulov.utilitybills2.servises.implimentations;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.assaulov.utilitybills2.exeptions.BaseException;
+import ru.assaulov.utilitybills2.exeptions.ErrorType;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
-import ru.assaulov.utilitybills2.payload.respose.MessageResponse;
 import ru.assaulov.utilitybills2.repositories.UserRepository;
 import ru.assaulov.utilitybills2.servises.interfaces.UserService;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,13 +36,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public ResponseEntity<?> saveUser(RegistrationRequest request) {
-		User userInDb = userRepository.findByLoginIgnoreCase(request.getLogin());
-		if(userInDb!= null){
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
-		}
+	public Optional<User> save(RegistrationRequest request) {
 		User userToSave = new User().toBuilder()
 				.login(request.getLogin())
 				.firstName(request.getFirstName())
@@ -50,19 +45,17 @@ public class UserServiceImp implements UserService, UserDetailsService {
 				.gender(Gender.valueOf(genderNotNull(request.getGender())))
 				.email(request.getEmail())
 				.roles(Collections.singleton(Role.ROLE_USER)).build();
-		userRepository.save(userToSave);
-		LOGGER.info(userToSave+ "save in database");
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return Optional.of(userRepository.save(userToSave));
 	}
 
 	@Override
-	public User findUserById(long userId) {
-		return userRepository.findById(userId).get();
+	public Optional<User> findUserById(long userId) {
+		return userRepository.findById(userId);
 	}
 
 	@Override
-	public User findUserByLogin(String login) {
-		return userRepository.findByLoginIgnoreCase(login);
+	public Optional<User> update(User user) {
+		return Optional.of(userRepository.save(user));
 	}
 
 	@Override
@@ -71,15 +64,10 @@ public class UserServiceImp implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteUser(long userId) {
-		User user = userRepository.getById(userId);
-		if(user!=null){
-			userRepository.deleteById(userId);
-			return ResponseEntity.ok(new MessageResponse("User deleted successfully!"));
-		}
-		return ResponseEntity
-				.badRequest()
-				.body(new MessageResponse("Error: User is already deleted or does not exist!"));
+	public Boolean deleteUser(long userId) {
+		User userFromDb = findUserById(userId).orElseThrow(()-> new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND.getDescription(), userId)));
+		userRepository.delete(userFromDb);
+		return !userRepository.findById(userFromDb.getUserId()).isPresent();
 	}
 
 	private String genderNotNull(String gender){

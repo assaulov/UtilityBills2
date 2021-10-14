@@ -1,19 +1,19 @@
 package ru.assaulov.utilitybills2.servises.interfaces;
 
-import org.springframework.http.ResponseEntity;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
-	ResponseEntity<?> saveUser(RegistrationRequest userToSave);
+	Optional<User> save(RegistrationRequest request);
 
-	User findUserById(long userId);
+	Optional<User> findUserById(long userId);
 
-	User findUserByLogin(String login);
+	Optional<User> update(User user);
 
 	List<User> findAllUsers();
 
-	ResponseEntity<?> deleteUser(long userId);
+	Boolean  deleteUser(long userId);
 }
