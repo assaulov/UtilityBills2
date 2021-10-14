@@ -67,7 +67,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
 	public Boolean deleteUser(long userId) {
 		User userFromDb = findUserById(userId).orElseThrow(()-> new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND.getDescription(), userId)));
 		userRepository.delete(userFromDb);
-		return !userRepository.findById(userFromDb.getUserId()).isPresent();
+		return userRepository.findById(userFromDb.getUserId()).isEmpty();
 	}
 
 	private String genderNotNull(String gender){
