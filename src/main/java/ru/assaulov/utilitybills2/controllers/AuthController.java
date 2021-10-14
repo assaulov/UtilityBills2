@@ -3,12 +3,15 @@ package ru.assaulov.utilitybills2.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import ru.assaulov.utilitybills2.exeptions.BaseException;
+import ru.assaulov.utilitybills2.exeptions.ErrorType;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.payload.request.LoginRequest;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
@@ -41,8 +44,10 @@ public class AuthController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> save(@RequestBody RegistrationRequest user){
-		LOGGER.info(user.toString());
-		return userService.saveUser(user);
+	public ResponseEntity<User> save(@RequestBody RegistrationRequest request){
+		LOGGER.info(request.toString());
+		return userService.save(request).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
+				String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), request.toString())
+		));
 	}
 }
