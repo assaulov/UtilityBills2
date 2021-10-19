@@ -1,4 +1,4 @@
-package ru.assaulov.utilitybills2;
+package ru.assaulov.utilitybills2.servises.implimentations;
 
 
 import org.junit.jupiter.api.*;
@@ -18,7 +18,6 @@ import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import ru.assaulov.utilitybills2.repositories.UserRepository;
-import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserServiceImpTest extends ConfigTest{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpTest.class);
@@ -52,7 +50,6 @@ public class UserServiceImpTest extends ConfigTest{
 	@Test
 	public void testSaveUser() {
 
-		when(userRepository.save(any(User.class))).thenReturn(user);
 		User savedUser = userService.save(request);
 
 		assertEquals(request.getLogin(), savedUser.getLogin());

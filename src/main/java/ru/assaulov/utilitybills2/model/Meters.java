@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode(of = {"meterId", "meterDataWrite"})
 @SuperBuilder(toBuilder = true)
 public class Meters {
@@ -38,5 +37,20 @@ public class Meters {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-
+	@Override
+	public String toString() {
+		String userID = null;
+		if(user.getUserId()!=null){
+			userID = user.getUserId().toString();
+		}
+		return "Meters{" +
+				"meterId=" + meterId +
+				", meterDataWrite=" + meterDataWrite +
+				", coldWater=" + coldWater +
+				", hotWater=" + hotWater +
+				", electricity=" + electricity +
+				", gas=" + gas +
+				", user ID=" + userID +
+				'}';
+	}
 }
