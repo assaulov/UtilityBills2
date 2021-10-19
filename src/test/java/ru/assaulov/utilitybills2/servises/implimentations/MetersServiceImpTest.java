@@ -46,12 +46,12 @@ public class MetersServiceImpTest extends ConfigTest {
 		LOGGER.info("Test save meters");
 		given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(testUser);
 		Meters meter = metersService.saveMeter(meterRequest);
-		assertEquals(meterRequest.getColdWater(), meter.getColdWater(), "");
-		assertEquals(meterRequest.getHotWater(), meter.getHotWater());
-		assertEquals(meterRequest.getElectricity(), meter.getElectricity());
-		assertEquals(meterRequest.getGas(), meter.getGas());
-		assertEquals(meterRequest.getColdWater(), meter.getColdWater());
-		assertEquals(meterRequest.getMeterDataWrite(), meter.getMeterDataWrite());
+		assertEquals(meterRequest.getColdWater(), meter.getColdWater(), "Данные не соответствуют");
+		assertEquals(meterRequest.getHotWater(), meter.getHotWater(), "Данные не соответствуют");
+		assertEquals(meterRequest.getElectricity(), meter.getElectricity(),"Данные не соответствуют");
+		assertEquals(meterRequest.getGas(), meter.getGas(),"Данные не соответствуют");
+		assertEquals(meterRequest.getColdWater(), meter.getColdWater(),"Данные не соответствуют");
+		assertEquals(meterRequest.getMeterDataWrite(), meter.getMeterDataWrite(),"Данные не соответствуют");
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class MetersServiceImpTest extends ConfigTest {
 		when(metersRepository.findAllByUser_UserId(777L)).thenReturn(generatedMeters);
 		createSomeMeters(true,5);
 		List<Meters> metersFromDB = metersService.findAllByUser_UserId(meterRequest);
-		assertIterableEquals(generatedMeters, metersFromDB);
+		assertIterableEquals(generatedMeters, metersFromDB,"Данные для пользователя с ID " + testUser.getUserId() + " не найдены");
 		generatedMeters.clear();
 	}
 
@@ -105,7 +105,7 @@ public class MetersServiceImpTest extends ConfigTest {
 		Meters testMeter = createMeter(meterRequest,testUser);
 		given(metersRepository.findById(111L)).willReturn(Optional.of(testMeter));
 		Boolean isDeleted = metersService.deleteMeterById(meterRequest);
-		assertTrue(isDeleted);
+		assertTrue(isDeleted, "Пользователь не удален");
 		verify(metersRepository, times(1)).delete(testMeter);
 	}
 
