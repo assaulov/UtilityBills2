@@ -1,4 +1,4 @@
-package ru.assaulov.utilitybills2;
+package ru.assaulov.utilitybills2.servises.implimentations;
 
 
 import org.junit.jupiter.api.*;
@@ -18,7 +18,6 @@ import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import ru.assaulov.utilitybills2.repositories.UserRepository;
-import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +29,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
+
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserServiceImpTest extends ConfigTest{
-
+public class UserServiceImpTest {
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpTest.class);
 
 	@MockBean
@@ -46,13 +45,13 @@ public class UserServiceImpTest extends ConfigTest{
 	@Autowired
 	private UserServiceImp userService;
 
-	private final RegistrationRequest request = createRequest();
-	private final User user = createTestUser(request);
+	private final RegistrationRequest request = TestUtils.createRequest();
+	private final User user = TestUtils.createTestUser(request);
 
 	@Test
 	public void testSaveUser() {
+		LOGGER.info("Test to save user in DB (Registration)");
 
-		when(userRepository.save(any(User.class))).thenReturn(user);
 		User savedUser = userService.save(request);
 
 		assertEquals(request.getLogin(), savedUser.getLogin());
@@ -62,11 +61,11 @@ public class UserServiceImpTest extends ConfigTest{
 		assertEquals(request.getEmail(), savedUser.getEmail());
 		assertFalse(savedUser.getPassword().isEmpty());
 		assertTrue(savedUser.getRoles().contains(Role.ROLE_USER));
-
 	}
 
 	@Test
 	public void testFindUserByLogin() {
+		LOGGER.info("Test to find user by login");
 		given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(user);
 		UserDetails userDetails = userService.loadUserByUsername(request.getLogin());
 		assertEquals(request.getLastName() + " " + request.getFirstName(), userDetails.getUsername());
@@ -74,6 +73,7 @@ public class UserServiceImpTest extends ConfigTest{
 
 	@Test
 	public void testFindUserById() {
+		LOGGER.info("Test to find user by id");
 		user.setUserId(15L);
 		given(userRepository.findById(any(Long.class))).willReturn(Optional.of(user));
 		Optional<User> userFromDb = userService.findUserById(15L);
@@ -82,6 +82,7 @@ public class UserServiceImpTest extends ConfigTest{
 
 	@Test
 	public void  testUpdateUser(){
+		LOGGER.info("Test to update user by id");
 		User fieldsUpdate = new User().toBuilder()
 				.email("novii@mail.ru")
 				.firstName("Новое Имя")
@@ -94,6 +95,7 @@ public class UserServiceImpTest extends ConfigTest{
 		given(userRepository.findById(any(Long.class))).willReturn(Optional.of(user));
 		userService.update(fieldsUpdate);
 		User updatedUser = userService.findUserById(user.getUserId()).get();
+		LOGGER.info("User after update: " + updatedUser);
 		assertEquals(user.getEmail(), updatedUser.getEmail());
 		assertEquals(user.getFirstName(), updatedUser.getFirstName());
 		assertEquals(user.getLastName(), updatedUser.getLastName());
@@ -103,6 +105,7 @@ public class UserServiceImpTest extends ConfigTest{
 
 	@Test
 	public void testFindAllUsers() {
+		LOGGER.info("Test to find all user");
 		ArrayList<User> users = new ArrayList<>();
 		users.add(user);
 		users.add(new User().toBuilder().login("test1").build());
@@ -116,6 +119,7 @@ public class UserServiceImpTest extends ConfigTest{
 
 	@Test
 	public void testDeleteUser() {
+		LOGGER.info("Test to delete user by id");
 		user.setUserId(15L);
 		given(userService.findUserById(user.getUserId())).willReturn(Optional.of(user));
 		Boolean isDeleted = userService.deleteUserById(user.getUserId());

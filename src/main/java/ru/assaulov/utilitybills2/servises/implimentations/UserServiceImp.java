@@ -60,6 +60,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
 		return userRepository.findById(userId);
 	}
 
+	//TODO: Перевести на Request
 	@Override
 	public Boolean update(User user) {
 		LOGGER.info("Try to update user " + user);

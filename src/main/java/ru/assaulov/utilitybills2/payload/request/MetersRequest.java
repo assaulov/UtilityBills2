@@ -1,15 +1,19 @@
 package ru.assaulov.utilitybills2.payload.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class MetersRequest {
 	private String userLogin;
-	private long meterId;
+	private Long meterId;
 	private LocalDate meterDataWrite;
 	private LocalDate dateFrom;
 	private LocalDate dateTo;
