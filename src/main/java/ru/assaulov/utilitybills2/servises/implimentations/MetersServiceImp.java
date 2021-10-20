@@ -37,6 +37,11 @@ public class MetersServiceImp implements MetersService {
 				.electricity(meterRequest.getElectricity())
 				.gas(meterRequest.getGas())
 				.build();
+
+		if(!findMetersByDate(meterRequest).isEmpty()){
+				throw new BaseException("Meter in this date already exist");
+		}
+
 		metersRepository.save(meterToSave);
 		LOGGER.info(meterToSave + "successfully saved in DB");
 		return meterToSave;
