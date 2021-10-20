@@ -16,11 +16,11 @@ import java.util.Collections;
 import java.util.Random;
 
 //TODO: Переделать в утилитарный класс
-public class ConfigTest {
+public class TestUtils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestUtils.class);
 
-	public Meters createMeter(MetersRequest request, User user) {
+	public static Meters createMeter(MetersRequest request, User user) {
 		Meters meter = new Meters().toBuilder()
 				.coldWater(request.getColdWater())
 				.hotWater(request.getHotWater())
@@ -36,7 +36,7 @@ public class ConfigTest {
 		return meter;
 	}
 
-	public MetersRequest createMetersRequest(String userLogin) {
+	public static MetersRequest createMetersRequest(String userLogin) {
 		return new MetersRequest().toBuilder()
 				.coldWater(randomValue(0.0, 100.0))
 				.hotWater(randomValue(0.0, 100.0))
@@ -48,7 +48,7 @@ public class ConfigTest {
 	}
 
 	// TODO : Сделать генератор рандомных данных
-	public RegistrationRequest createRequest() {
+	public static RegistrationRequest createRequest() {
 		return new RegistrationRequest().toBuilder()
 				.login("testUser")
 				.firstName("Test")
@@ -59,7 +59,7 @@ public class ConfigTest {
 				.build();
 	}
 
-	public User createTestUser(RegistrationRequest request) {
+	public static User createTestUser(RegistrationRequest request) {
 		return new User().toBuilder()
 				.login(request.getLogin())
 				.firstName(request.getFirstName())
@@ -70,7 +70,7 @@ public class ConfigTest {
 				.roles(Collections.singleton(Role.ROLE_USER)).build();
 	}
 
-	private double randomValue(double rangeMin, double rangeMax) {
+	private static double randomValue(double rangeMin, double rangeMax) {
 		Random r = new Random();
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(2);
@@ -85,14 +85,14 @@ public class ConfigTest {
 				.getAsDouble();
 	}
 
-	private int randomValue(int rangeMin, int rangeMax) {
+	private static int randomValue(int rangeMin, int rangeMax) {
 		Random r = new Random();
 		return r.ints(rangeMin, rangeMax)
 				.findFirst()
 				.getAsInt();
 	}
 
-	private LocalDate randomDate() {
+	private static LocalDate randomDate() {
 		return LocalDate.now().minus(Period.ofDays((new Random().nextInt(365))));
 	}
 

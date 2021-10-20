@@ -1,7 +1,6 @@
 package ru.assaulov.utilitybills2.servises.implimentations;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +22,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-public class MetersServiceImpTest extends ConfigTest {
+public class MetersServiceImpTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetersServiceImpTest.class);
-	private final MetersRequest meterRequest = createMetersRequest("test");
+	private final MetersRequest meterRequest = TestUtils.createMetersRequest("test");
 	private final List<Meters> generatedMeters = new ArrayList<>();
 	private final User testUser = new User().toBuilder().login("test").userId(777L).build();
 
@@ -102,7 +100,7 @@ public class MetersServiceImpTest extends ConfigTest {
 	public void testDeleteByMeterId(){
 		LOGGER.info("Test delete meters by meters ID");
 		meterRequest.setMeterId(111L);
-		Meters testMeter = createMeter(meterRequest,testUser);
+		Meters testMeter = TestUtils.createMeter(meterRequest,testUser);
 		given(metersRepository.findById(111L)).willReturn(Optional.of(testMeter));
 		Boolean isDeleted = metersService.deleteMeterById(meterRequest);
 		assertTrue(isDeleted, "Пользователь не удален");
@@ -122,7 +120,7 @@ public class MetersServiceImpTest extends ConfigTest {
 				.userLogin(testUser.getLogin())
 				.meterId(555L)
 				.build();
-		Meters testMeter = createMeter(meterRequest,testUser);
+		Meters testMeter = TestUtils.createMeter(meterRequest,testUser);
 		given(metersRepository.findById(any(Long.class))).willReturn(Optional.of(testMeter));
 		Boolean isUpdated = metersService.updateMeterById(fieldsToUpdate);
 		assertTrue(isUpdated, "Ошибка обновления полей показаний счетчиков");
@@ -133,7 +131,7 @@ public class MetersServiceImpTest extends ConfigTest {
 	void testFindById() {
 		LOGGER.info("Test find meters by meters ID");
 		meterRequest.setMeterId(404L);
-		Meters testMeter = createMeter(meterRequest,testUser);
+		Meters testMeter = TestUtils.createMeter(meterRequest,testUser);
 		when(metersRepository.findById(any(Long.class))).thenReturn(Optional.of(testMeter));
 		Optional<Meters> meterFromDB = metersService.findById(meterRequest);
 		assertTrue(meterFromDB.isPresent(), "Запись с ID " + meterRequest.getMeterId() + " не существует");
@@ -142,7 +140,7 @@ public class MetersServiceImpTest extends ConfigTest {
 
 	private void createSomeMeters(boolean isRandomDateNeed,int count) {
 		for (int i = 0; i < count; i++) {
-			Meters testMeter = createMeter(createMetersRequest("test"),testUser);
+			Meters testMeter = TestUtils.createMeter(TestUtils.createMetersRequest("test"),testUser);
 			testMeter.setMeterId(i + 1L);
 			if(!isRandomDateNeed){
 				testMeter.setMeterDataWrite(LocalDate.now());
