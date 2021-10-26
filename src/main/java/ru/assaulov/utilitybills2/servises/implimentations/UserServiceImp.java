@@ -37,9 +37,14 @@ public class UserServiceImp implements UserService, UserDetailsService {
 		return userRepository.findByLoginIgnoreCase(username);
 	}
 
+	//TODO: Возвращать UserResponse
 	@Override
 	public User save(RegistrationRequest request) {
 		LOGGER.info("Try save user in database");
+		User userFromDB = userRepository.findByLoginIgnoreCase(request.getLogin());
+		if(userFromDB!=null){
+			throw new BaseException(String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), "User already Exist"));
+		}
 		User userToSave = new User().toBuilder()
 				.login(request.getLogin())
 				.firstName(request.getFirstName())
