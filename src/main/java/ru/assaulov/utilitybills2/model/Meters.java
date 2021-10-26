@@ -1,6 +1,7 @@
 package ru.assaulov.utilitybills2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -20,7 +21,7 @@ public class Meters {
 	@Column(name = "meter_id", nullable = false)
 	private Long meterId;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	@Column(name = "meter_date_of_write", nullable = false)
 	private LocalDate meterDataWrite;
 
@@ -33,6 +34,7 @@ public class Meters {
 	private Double electricity;
 	private Double gas;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;

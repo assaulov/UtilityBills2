@@ -21,5 +21,5 @@ public interface MetersService {
 
 	List<Meters> findMetersByPeriod(MetersRequest request);
 
-	List<Meters> findAllByUser_UserId(MetersRequest request);
+	List<Meters> findAllByUser(String userLogin);
 }
