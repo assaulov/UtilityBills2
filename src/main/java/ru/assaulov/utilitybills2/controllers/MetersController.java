@@ -8,6 +8,7 @@ import ru.assaulov.utilitybills2.exeptions.BaseException;
 import ru.assaulov.utilitybills2.exeptions.ErrorType;
 import ru.assaulov.utilitybills2.model.Meters;
 import ru.assaulov.utilitybills2.payload.request.MetersRequest;
+import ru.assaulov.utilitybills2.payload.respose.MessageResponse;
 import ru.assaulov.utilitybills2.servises.implimentations.MetersServiceImp;
 
 import java.util.List;
@@ -24,16 +25,47 @@ public class MetersController {
 		this.metersService = metersService;
 	}
 
-	@PostMapping
-	public ResponseEntity<Meters> saveMeter (@RequestBody MetersRequest request){
+	@PostMapping("/{userLogin}")
+	public ResponseEntity<Meters> saveMeter (@PathVariable("userLogin") String userLogin, @RequestBody MetersRequest request){
+		request.setUserLogin(userLogin);
 		return Optional.of(metersService.saveMeter(request)).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
 				String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), request)));
 	}
 
-	@GetMapping
-	public ResponseEntity<List<Meters>> getAllMeters(@RequestBody MetersRequest request){
-		return Optional.of(metersService.findAllByUser_UserId(request)).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
-				String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), request)));
+	@GetMapping("/{userLogin}")
+	public ResponseEntity<List<Meters>> getAllMeters(@PathVariable("userLogin") String userLogin){
+		return Optional.of(metersService.findAllByUser(userLogin)).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
+				String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), userLogin)));
+	}
+
+	@DeleteMapping
+	public ResponseEntity<?> deleteMeter(@RequestBody MetersRequest request){
+		if(metersService.deleteMeterById(request)){
+			return ResponseEntity.ok(new MessageResponse("Meter with ID: " + request.getMeterId() + " deleted successful"));
+		}
+		return ResponseEntity.badRequest().body(new MessageResponse("Meter with ID: " + request.getMeterId() + " not found"));
+	}
+
+	@PutMapping
+	public ResponseEntity<?> updateMeter(@RequestBody MetersRequest request) {
+		if(metersService.updateMeterById(request)){
+			return ResponseEntity.ok(new MessageResponse("Meter with ID: " + request.getMeterId() + " updated successful"));
+		}
+		return ResponseEntity.badRequest().body(new MessageResponse("Meter with ID: " + request.getMeterId() + " not found"));
+	}
+
+	@GetMapping("/{userLogin}/date")
+	public ResponseEntity<List<Meters>> getMetersByDate(@PathVariable("userLogin") String userLogin, @RequestBody MetersRequest request){
+		request.setUserLogin(userLogin);
+		return Optional.of(metersService.findMetersByDate(request)).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
+				String.format(ErrorType.ENTITY_NOT_FOUND.getDescription(), userLogin)));
+	}
+
+	@GetMapping("/{userLogin}/period")
+	public ResponseEntity<List<Meters>> getMetersByPeriod(@PathVariable("userLogin") String userLogin, @RequestBody MetersRequest request){
+		request.setUserLogin(userLogin);
+		return Optional.of(metersService.findMetersByPeriod(request)).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
+				String.format(ErrorType.ENTITY_NOT_FOUND.getDescription(),userLogin)));
 	}
 
 
