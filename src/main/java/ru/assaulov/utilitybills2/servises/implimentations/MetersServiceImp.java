@@ -38,13 +38,15 @@ public class MetersServiceImp implements MetersService {
 				.gas(request.getGas())
 				.build();
 
-		if(!findMetersByDate(request).isEmpty()){
-				throw new BaseException("Meter in this date already exist");
-		}
+		try{
+			findMetersByDate(request);
+			throw new BaseException("Meter in this date already exist");
 
-		metersRepository.save(meterToSave);
-		LOGGER.info(meterToSave + "successfully saved in DB");
-		return meterToSave;
+		} catch (BaseException ex) {
+			metersRepository.save(meterToSave);
+			LOGGER.info(meterToSave + "successfully saved in DB");
+			return meterToSave;
+		}
 	}
 
 
