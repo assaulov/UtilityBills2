@@ -26,19 +26,19 @@ public class MetersServiceImp implements MetersService {
 	private final MetersRepository metersRepository;
 
 	@Override
-	public Meters saveMeter(MetersRequest meterRequest) {
-		LOGGER.info("Try save meter with request: " + meterRequest);
-		User user = userRepository.findByLoginIgnoreCase(meterRequest.getUserLogin());
+	public Meters saveMeter(MetersRequest request) {
+		LOGGER.info("Try save meter with request: " + request);
+		User user =findUser(request.getUserLogin());
 		Meters meterToSave = new Meters().toBuilder()
 				.user(user)
-				.meterDataWrite(meterRequest.getMeterDataWrite())
-				.coldWater(meterRequest.getColdWater())
-				.hotWater(meterRequest.getHotWater())
-				.electricity(meterRequest.getElectricity())
-				.gas(meterRequest.getGas())
+				.meterDataWrite(request.getMeterDataWrite())
+				.coldWater(request.getColdWater())
+				.hotWater(request.getHotWater())
+				.electricity(request.getElectricity())
+				.gas(request.getGas())
 				.build();
 
-		if(!findMetersByDate(meterRequest).isEmpty()){
+		if(!findMetersByDate(request).isEmpty()){
 				throw new BaseException("Meter in this date already exist");
 		}
 
@@ -50,7 +50,7 @@ public class MetersServiceImp implements MetersService {
 
 	@Override
 	public Boolean deleteMeterById(MetersRequest request) {
-		 Meters meter = metersRepository.findById(request.getMeterId()).orElseThrow(()-> new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND.getDescription(), request.getMeterId())));;
+		 Meters meter = metersRepository.findById(request.getMeterId()).orElseThrow(()-> new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND.getDescription(), request.getMeterId())));
 		 metersRepository.delete(meter);
 		 LOGGER.info(meter + "successfully deleted from DB");
 		 return true;
@@ -64,6 +64,7 @@ public class MetersServiceImp implements MetersService {
 			meterFromDB.setHotWater(request.getHotWater());
 			meterFromDB.setElectricity(request.getElectricity());
 			meterFromDB.setGas(request.getGas());
+			meterFromDB.setMeterDataWrite(request.getMeterDataWrite());
 			LOGGER.info(meterFromDB + "after update");
 			metersRepository.saveAndFlush(meterFromDB);
 			LOGGER.info("Update successful");
@@ -77,21 +78,32 @@ public class MetersServiceImp implements MetersService {
 	}
 
 	@Override
-	public List<Meters> findAllByUser_UserId(MetersRequest metersRequest) {
-		long userId = userRepository.findByLoginIgnoreCase(metersRequest.getUserLogin()).getUserId();
-		return metersRepository.findAllByUser_UserId(userId);
+	public List<Meters> findAllByUser(String userLogin) {
+		return metersRepository.findAllByUser_UserId(findUser(userLogin).getUserId());
 	}
 
 	@Override
 	public List<Meters> findMetersByDate(MetersRequest request) {
-		User user = userRepository.findByLoginIgnoreCase(request.getUserLogin());
-		return metersRepository.findMetersByDate(request.getMeterDataWrite(), user);
+		List<Meters> meters = metersRepository.findMetersByDate(request.getMeterDataWrite(), findUser(request.getUserLogin()));
+		if(meters.isEmpty()){
+			throw new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND_BY_DATE.getDescription(), request.getMeterDataWrite().toString()));
+		}
+		return meters;
 	}
 
 	@Override
 	public List<Meters> findMetersByPeriod(MetersRequest request) {
 		LOGGER.info(request.toString());
-		User user = userRepository.findByLoginIgnoreCase(request.getUserLogin());
-		return metersRepository.findMetersByPeriod(request.getDateFrom(), request.getDateTo(), user);
+		List<Meters> meters = metersRepository.findMetersByPeriod(request.getDateFrom(), request.getDateTo(), findUser(request.getUserLogin()));
+		if(meters.isEmpty()){
+			throw new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND_BY_PERIOD.getDescription(), request.getPeriod()));
+		}
+		return meters;
+	}
+
+	private User findUser(String login) {
+		return Optional.ofNullable(userRepository.findByLoginIgnoreCase(login))
+				.orElseThrow(()->
+						new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND.getDescription(), login)));
 	}
 }

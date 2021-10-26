@@ -17,10 +17,16 @@ public class MetersRequest {
 	private Long meterId;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private LocalDate meterDataWrite;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private LocalDate dateFrom;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private LocalDate dateTo;
 	private Double coldWater;
 	private Double hotWater;
 	private Double electricity;
 	private Double gas;
+
+	public String getPeriod(){
+		return dateFrom.toString() + " - " +  dateTo.toString();
+	}
 }

@@ -53,12 +53,12 @@ public class MetersServiceImpTest {
 	}
 
 	@Test
-	public void testFindAllByUser_UserId() {
+	public void testFindAllByUser() {
 		LOGGER.info("Test show meters by user ID");
 		given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(testUser);
 		when(metersRepository.findAllByUser_UserId(777L)).thenReturn(generatedMeters);
 		createSomeMeters(true,5);
-		List<Meters> metersFromDB = metersService.findAllByUser_UserId(meterRequest);
+		List<Meters> metersFromDB = metersService.findAllByUser(meterRequest.getUserLogin());
 		assertIterableEquals(generatedMeters, metersFromDB,"Данные для пользователя с ID " + testUser.getUserId() + " не найдены");
 		generatedMeters.clear();
 	}
