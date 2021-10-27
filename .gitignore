@@ -40,4 +40,4 @@ node_modules
 
 notes.txt
 
-/src/main/resources/liquibase.properties
+liquibase.properties
