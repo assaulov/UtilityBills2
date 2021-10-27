@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 @Component
 public class PropertiesSetter  {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(PropertiesSetter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesSetter.class);
 
 	@Value("${spring.datasource.url}")
 	private  String dbUrl;
