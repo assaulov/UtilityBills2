@@ -29,6 +29,9 @@ public class MetersServiceImp implements MetersService {
 	public Meters saveMeter(MetersRequest request) {
 		LOGGER.info("Try save meter with request: " + request);
 		User user =findUser(request.getUserLogin());
+		if(!metersRepository.findMetersByDate(request.getMeterDataWrite(), user).isEmpty()){
+			throw new BaseException("Meter on this date: " + request.getMeterDataWrite() + " already exist");
+		}
 		Meters meterToSave = new Meters().toBuilder()
 				.user(user)
 				.meterDataWrite(request.getMeterDataWrite())
@@ -38,17 +41,12 @@ public class MetersServiceImp implements MetersService {
 				.gas(request.getGas())
 				.build();
 
-		try{
-			findMetersByDate(request);
-			throw new BaseException("Meter in this date already exist");
+		metersRepository.save(meterToSave);
+		LOGGER.info(meterToSave + "successfully saved in DB");
+		return meterToSave;
 
-		} catch (BaseException ex) {
-			metersRepository.save(meterToSave);
-			LOGGER.info(meterToSave + "successfully saved in DB");
-			return meterToSave;
-		}
+
 	}
-
 
 	@Override
 	public Boolean deleteMeterById(MetersRequest request) {
@@ -86,10 +84,12 @@ public class MetersServiceImp implements MetersService {
 
 	@Override
 	public List<Meters> findMetersByDate(MetersRequest request) {
+		LOGGER.info("Search user meters by date");
 		List<Meters> meters = metersRepository.findMetersByDate(request.getMeterDataWrite(), findUser(request.getUserLogin()));
 		if(meters.isEmpty()){
 			throw new BaseException(String.format(ErrorType.ENTITY_NOT_FOUND_BY_DATE.getDescription(), request.getMeterDataWrite().toString()));
 		}
+		LOGGER.info(meters.toString());
 		return meters;
 	}
 

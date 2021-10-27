@@ -66,11 +66,11 @@ public class MetersServiceImpTest {
 	@Test
 	public void testFindMetersByPeriod() {
 		LOGGER.info("Test show meters data by period");
-		given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(testUser);
-		when(metersRepository.findMetersByPeriod(meterRequest.getDateFrom(), meterRequest.getDateTo(), testUser)).thenReturn(generatedMeters);
+		createSomeMeters(true,7);
 		meterRequest.setDateFrom(LocalDate.now().minusDays(365));
 		meterRequest.setDateTo(LocalDate.now());
-		createSomeMeters(true,7);
+		given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(testUser);
+		when(metersRepository.findMetersByPeriod(meterRequest.getDateFrom(), meterRequest.getDateTo(), testUser)).thenReturn(generatedMeters);
 		List<Meters> metersFormDb = metersService.findMetersByPeriod(meterRequest);
 		metersFormDb.sort(Comparator.comparing(Meters::getMeterDataWrite).thenComparing(Meters::getMeterId));
 		metersFormDb.forEach(meter -> System.out.println("id: " + meter.getMeterId() + " date: " + meter.getMeterDataWrite().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));

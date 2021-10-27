@@ -6,7 +6,8 @@ public enum ErrorType {
 	ENTITY_NOT_FOUND_BY_DATE("Entity not found by date: %s"),
 	ENTITY_NOT_FOUND_BY_PERIOD("Entity not found by period: %s"),
 	ENTITY_NOT_FOUND_BY_LOGIN("Entity not found by login: %s"),
-	ENTITY_NOT_UPDATED("Entity not updated: %s");
+	ENTITY_NOT_UPDATED("Entity not updated: %s"),
+	ENTITY_NOT_CURRENT_USER("Not current user, %s");
 
 	private final String description;
 
