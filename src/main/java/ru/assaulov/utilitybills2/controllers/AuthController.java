@@ -16,6 +16,7 @@ import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.payload.request.LoginRequest;
 import ru.assaulov.utilitybills2.payload.request.RegistrationRequest;
 import ru.assaulov.utilitybills2.payload.respose.MessageResponse;
+import ru.assaulov.utilitybills2.payload.respose.UserResponse;
 import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 
 import java.util.Optional;
@@ -42,7 +43,14 @@ public class AuthController {
 				new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		User userDetails = (User) authentication.getPrincipal();
-		return ResponseEntity.ok(new MessageResponse(userDetails.getLogin() + " login successfully!"));
+		System.out.println(userDetails);
+		UserResponse response = new UserResponse().toBuilder()
+				.login(userDetails.getLogin())
+				.fullName(userDetails.getFullName())
+				.gender(userDetails.getGender().getDescription())
+				.email(userDetails.getEmail()).build();
+		System.out.println(response);
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
 	@PostMapping("/signup")

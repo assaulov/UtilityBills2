@@ -3,13 +3,17 @@
     <v-app-bar app>
       <v-toolbar-title>Utility Bills</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn text
+             @click="showMeters">
+        Meters
+      </v-btn>
+      <v-spacer></v-spacer>
       <v-btn v-if="isLoggedIn" icon href="/logout">
         <v-icon>exit_to_app</v-icon>
       </v-btn>
     </v-app-bar>
     <v-main >
       <router-view></router-view>
-      <span class="message" v-show="responseMessage !== null">{{responseMessage.message}}</span>
       <access v-show="isRegistrationFormVisible"></access>
       <v-btn
           large
@@ -39,7 +43,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLoggedIn', 'responseMessage', 'isRegistrationFormVisible'])
+    ...mapState(['isLoggedIn', 'isRegistrationFormVisible'])
   },
   methods: {
     ...mapMutations(['registerForm']),
@@ -49,6 +53,10 @@ export default {
     },
     showAccessForm(){
       this.registerForm(true)
+    },
+    showMeters() {
+      this.$router.push('/meters')
+
     }
   },
 }

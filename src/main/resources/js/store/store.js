@@ -6,10 +6,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        user:{},
+        user:null,
         isLoggedIn:false,
         isRegistrationFormVisible:false,
-        responseMessage:''
+        userLogin:''
     },
     getters: {
     },
@@ -19,13 +19,13 @@ export default new Vuex.Store({
             state.isRegistrationFormVisible=newValue
 
         },
-        loginUserMutation(state,responseMessage ){
+        loginUserMutation(state,user){
             state.isLoggedIn = true
-            state.responseMessage=responseMessage
+            state.user=user
 
         },
-        registerUserMutation(state, responseMessage){
-            state.responseMessage=responseMessage
+        registerUserMutation(state, user){
+            state.user=user
         }
     },
     actions: {
