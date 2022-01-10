@@ -7,7 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         user:{},
-        isLoggedIn:localStorage.getItem("token"),
+        // isLoggedIn:localStorage.getItem("token"),
+        isLoggedIn:false,
         isRegistrationFormVisible:false,
         responseMessage:''
     },
@@ -32,7 +33,7 @@ export default new Vuex.Store({
         async loginUserAction({commit, state}, userToLogin) {
             const response = await userApi.login(userToLogin)
             const data = await  response.json()
-            localStorage.setItem("token", "JWT")
+            // localStorage.setItem("token", "JWT")
             commit('loginUserMutation',data)
         },
         async registerUserAction({commit, state}, userToRegistration) {
