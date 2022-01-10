@@ -3,17 +3,13 @@
     <v-app-bar app>
       <v-toolbar-title>Utility Bills</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text
-             @click="showMeters">
-        Meters
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-btn v-if="isLoggedIn" icon href="/logout">
+      <v-btn v-if="isLoggedIn" icon href="/logout" v-on:click="isLoggedIn = false">
         <v-icon>exit_to_app</v-icon>
       </v-btn>
     </v-app-bar>
     <v-main >
       <router-view></router-view>
+      <span class="message" v-show="responseMessage !== null">{{responseMessage.message}}</span>
       <access v-show="isRegistrationFormVisible"></access>
       <v-btn
           large
@@ -37,16 +33,16 @@ import Access from "../components/Access.vue";
 
 export default {
   name: 'app',
-  created () {
-    // Read sessionStorage on page load
-    if (sessionStorage.getItem('store')) {
-      this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
-    }
-    // Save the store to sessionStorage when the page is refreshed
-    window.addEventListener('beforeunload', () => {
-      sessionStorage.setItem('store', JSON.stringify(this.$store.state))
-    })
-  },
+  // created () {
+  //   // Read sessionStorage on page load
+  //   if (sessionStorage.getItem('store')) {
+  //     this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
+  //   }
+  //   // Save the store to sessionStorage when the page is refreshed
+  //   window.addEventListener('beforeunload', () => {
+  //     sessionStorage.setItem('store', JSON.stringify(this.$store.state))
+  //   })
+  // },
   components: {Access},
   data() {
     return {
@@ -54,7 +50,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLoggedIn', 'isRegistrationFormVisible'])
+    ...mapState(['isLoggedIn', 'responseMessage', 'isRegistrationFormVisible'])
   },
   methods: {
     ...mapMutations(['registerForm']),
@@ -64,10 +60,6 @@ export default {
     },
     showAccessForm(){
       this.registerForm(true)
-    },
-    showMeters() {
-      this.$router.push('/meters')
-
     }
   },
 }
