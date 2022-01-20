@@ -41,7 +41,6 @@ public class AuthController {
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
 		User userDetails = (User) authentication.getPrincipal();
 		System.out.println(userDetails);
 		UserResponse response = new UserResponse().toBuilder()
@@ -50,6 +49,7 @@ public class AuthController {
 				.gender(userDetails.getGender().getDescription())
 				.email(userDetails.getEmail()).build();
 		System.out.println(response);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 

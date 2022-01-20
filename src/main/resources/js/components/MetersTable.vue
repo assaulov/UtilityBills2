@@ -1,15 +1,16 @@
 <template>
+
   <v-data-table
       :headers="headers"
-      :items="desserts"
-      sort-by="calories"
+      :items="meters"
+      sort-by="coldWater"
       class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar
           flat
       >
-        <v-toolbar-title>My CRUD</v-toolbar-title>
+        <v-toolbar-title>Meters</v-toolbar-title>
         <v-divider
             class="mx-4"
             inset
@@ -28,7 +29,7 @@
                 v-bind="attrs"
                 v-on="on"
             >
-              New Item
+              New Meter
             </v-btn>
           </template>
           <v-card>
@@ -45,8 +46,8 @@
                       md="4"
                   >
                     <v-text-field
-                        v-model="editedItem.name"
-                        label="Dessert name"
+                        v-model="editedItem.meterDataWrite"
+                        label="meterDataWrite"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -55,8 +56,8 @@
                       md="4"
                   >
                     <v-text-field
-                        v-model="editedItem.calories"
-                        label="Calories"
+                        v-model="editedItem.coldWater"
+                        label="coldWater"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -65,8 +66,8 @@
                       md="4"
                   >
                     <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
+                        v-model="editedItem.hotWater"
+                        label="hotWater"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -75,8 +76,8 @@
                       md="4"
                   >
                     <v-text-field
-                        v-model="editedItem.carbs"
-                        label="Carbs (g)"
+                        v-model="editedItem.electricity"
+                        label="electricity"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -85,8 +86,8 @@
                       md="4"
                   >
                     <v-text-field
-                        v-model="editedItem.protein"
-                        label="Protein (g)"
+                        v-model="editedItem.gas"
+                        label="gas"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -148,168 +149,246 @@
         Reset
       </v-btn>
     </template>
+
   </v-data-table>
+
+
+
 </template>
 
 
 <script>
+import {mapActions, mapState} from "vuex";
+import axios from "axios";
+import meters from "../api/meters";
+
 export default {
   name: "MetersTable",
-  data: () => ({
+  data: () => {
+      return {
     dialog: false,
     dialogDelete: false,
+    meters: [],
     headers: [
       {
-        text: 'Dessert (100g serving)',
+        text: 'meterDataWrite',
         align: 'start',
         sortable: false,
-        value: 'name',
+        value: 'meterDataWrite',
       },
-      { text: 'Calories', value: 'calories' },
-      { text: 'Fat (g)', value: 'fat' },
-      { text: 'Carbs (g)', value: 'carbs' },
-      { text: 'Protein (g)', value: 'protein' },
-      { text: 'Actions', value: 'actions', sortable: false },
+      {text: 'coldWater', value: 'coldWater'},
+      {text: 'hotWater', value: 'hotWater'},
+      {text: 'electricity', value: 'electricity'},
+      {text: 'gas', value: 'gas'},
+      {text: 'Actions', value: 'actions', sortable: false},
     ],
-    desserts: [],
     editedIndex: -1,
     editedItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      meterDataWrite: '',
+      coldWater: 0,
+      hotWater: 0,
+      electricity: 0,
+      gas: 0,
     },
-    defaultItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
-  }),
+  }},
 
   computed: {
-    formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+    formTitle() {
+      return this.editedIndex === -1 ? 'New Meters' : 'Edit Meters'
     },
+    ...mapState(['user']),
+
   },
 
   watch: {
-    dialog (val) {
+    dialog(val) {
       val || this.close()
     },
-    dialogDelete (val) {
+    dialogDelete(val) {
       val || this.closeDelete()
     },
   },
 
-  created () {
+  mounted() {
+    this.initialize()
+  },
+  created(){
     this.initialize()
   },
 
   methods: {
-    initialize () {
-      this.desserts = [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-        },
-        {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-        },
-        {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-        },
-        {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-        },
-        {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-        },
-        {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-      ]
-    },
+    ...mapActions(['addMeterAction', 'getMeterAction']),
 
-    editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
+    initialize() {
+
+    // this.$store.dispatch('getMeterAction')
+
+      axios.get("http://localhost:8888/meters/test_user").then((response) => {
+        console.log(response);
+        this.meters = response.data;
+        console.log(this.meters)
+
+      });
+
+      // this.meters = [
+      //   {
+      //     "meterId": 3,
+      //     "meterDataWrite": "21.01.2021",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 4,
+      //     "meterDataWrite": "22.01.2021",
+      //     "coldWater": 1.0,
+      //     "hotWater": 2.0,
+      //     "electricity": 3.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 5,
+      //     "meterDataWrite": "15.04.1994",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 6,
+      //     "meterDataWrite": "12.12.2020",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 7,
+      //     "meterDataWrite": "12.04.1995",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 8,
+      //     "meterDataWrite": "05.04.1994",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 9,
+      //     "meterDataWrite": "08.04.1994",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 10,
+      //     "meterDataWrite": "09.04.1994",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 11,
+      //     "meterDataWrite": "21.01.2020",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 12,
+      //     "meterDataWrite": "29.01.2020",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 13,
+      //     "meterDataWrite": "22.01.2036",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 14,
+      //     "meterDataWrite": "22.10.2039",
+      //     "coldWater": 1.0,
+      //     "hotWater": 2.0,
+      //     "electricity": 3.0,
+      //     "gas": 4.0
+      //   },
+      //   {
+      //     "meterId": 15,
+      //     "meterDataWrite": "20.09.2563",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 16,
+      //     "meterDataWrite": "01.01.2001",
+      //     "coldWater": 1.0,
+      //     "hotWater": 2.0,
+      //     "electricity": 3.0,
+      //     "gas": 4.0
+      //   },
+      //   {
+      //     "meterId": 17,
+      //     "meterDataWrite": "02.01.2026",
+      //     "coldWater": 0.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 0.0,
+      //     "gas": 0.0
+      //   },
+      //   {
+      //     "meterId": 18,
+      //     "meterDataWrite": "29.10.2021",
+      //     "coldWater": 14.0,
+      //     "hotWater": 0.0,
+      //     "electricity": 600.0,
+      //     "gas": 115.0
+      //   }
+      // ]
+      },
+
+    editItem(item) {
+      this.editedIndex = this.meters.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
-    deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
+    deleteItem(item) {
+      this.editedIndex = this.meters.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
-    deleteItemConfirm () {
-      this.desserts.splice(this.editedIndex, 1)
+    deleteItemConfirm() {
+      this.meters.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
-    close () {
+    close() {
       this.dialog = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
+
     },
 
-    closeDelete () {
+    closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
@@ -317,14 +396,21 @@ export default {
       })
     },
 
-    save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        this.desserts.push(this.editedItem)
+  async save () {
+      const meter = {
+        userLogin: this.user.login,
+        meterDataWrite: this.editedItem.meterDataWrite,
+        coldWater: this.editedItem.coldWater,
+        hotWater:this.editedItem.hotWater,
+        electricity: this.editedItem.electricity,
+        gas: this.editedItem.gas
       }
-      this.close()
-    },
+      console.log(meter)
+      await this.addMeterAction(meter)
+    this.close()
+
+
+  },
   }
 }
 </script>

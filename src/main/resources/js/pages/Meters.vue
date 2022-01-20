@@ -15,14 +15,20 @@
         </v-layout>
       </v-flex>
     </v-layout>
+<
+    <MetersTable></MetersTable>
+
   </v-container>
 
 </template>
 
 <script>
 import {mapState} from "vuex";
+import MetersTable from "../components/MetersTable.vue";
+
 export default {
   name: "Meters",
+  components: {MetersTable},
   computed: {
     ...mapState(['user'])
   },

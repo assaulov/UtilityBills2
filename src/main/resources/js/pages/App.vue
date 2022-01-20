@@ -3,13 +3,15 @@
     <v-app-bar app>
       <v-toolbar-title>Utility Bills</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="isLoggedIn" icon href="/logout" v-on:click="isLoggedIn = false">
-        <v-icon>exit_to_app</v-icon>
+      <v-btn v-if="isLoggedIn" @click="meters">Meters</v-btn>
+      <v-spacer></v-spacer>
+      <v-btn v-if="isLoggedIn" href="/logout" v-on:click="isLoggedIn = false">
+<!--        <v-icon>exit_to_app</v-icon>--> LOG OUT
       </v-btn>
     </v-app-bar>
     <v-main >
       <router-view></router-view>
-      <span class="message" v-show="responseMessage !== null">{{responseMessage.message}}</span>
+      <span class="message" v-if="userData">{{user}}</span>
       <access v-show="isRegistrationFormVisible"></access>
       <v-btn
           large
@@ -46,11 +48,12 @@ export default {
   components: {Access},
   data() {
     return {
+      userData: true,
       access: true
     }
   },
   computed: {
-    ...mapState(['isLoggedIn', 'responseMessage', 'isRegistrationFormVisible'])
+    ...mapState(['isLoggedIn', 'user', 'isRegistrationFormVisible'])
   },
   methods: {
     ...mapMutations(['registerForm']),
@@ -60,7 +63,11 @@ export default {
     },
     showAccessForm(){
       this.registerForm(true)
-    }
+    },
+    meters(){
+      this.$router.push('/meters')
+      this.userData = false;
+    },
   },
 }
 </script>
