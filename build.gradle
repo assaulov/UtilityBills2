@@ -24,7 +24,6 @@ task myScript(type: NodeTask) {
 }
 task buildFront(type: YarnTask) {
     args = ['built']
-  options = ['--node-option', '--openssl-legacy-provider']
 }
 
 yarn_install.dependsOn(yarn_cache_clean)
