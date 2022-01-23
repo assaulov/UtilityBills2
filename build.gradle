@@ -19,6 +19,9 @@ configurations {
     }
 }
 
+task myScript(type: NodeTask) {
+  options = ['--node-option', '--openssl-legacy-provider']
+}
 task buildFront(type: YarnTask) {
     args = ['built']
 }
