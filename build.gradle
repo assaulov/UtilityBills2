@@ -7,8 +7,7 @@ plugins {
 }
 
 apply plugin: "org.liquibase.gradle"
-//apply plugin: 'com.github.node-gradle.node'
-check.dependsOn('com.github.node-gradle.node')
+apply plugin: 'com.github.node-gradle.node'
 group = 'ru.assaulov'
 version = '0.10.7'
 sourceCompatibility = '17'
@@ -42,6 +41,7 @@ repositories {
 }
 
 node{
+    version =10.16
     download =true
 }
 
