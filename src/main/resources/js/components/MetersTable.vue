@@ -141,10 +141,10 @@
         mdi-delete
       </v-icon>
     </template>
-    <template v-slot:no-data>
+    <template v-slot:footer>
       <v-btn
           color="primary"
-          @click="initialize"
+          @click="getMeters"
       >
         Reset
       </v-btn>
@@ -210,25 +210,24 @@ export default {
   },
 
   mounted() {
-    this.initialize()
+    this.getMeters()
   },
   created(){
-    this.initialize()
+    this.getMeters()
   },
 
   methods: {
     ...mapActions(['addMeterAction', 'getMeterAction']),
-
+    ...mapState(['user']),
     initialize() {
 
     // this.$store.dispatch('getMeterAction')
 
-      axios.get("http://localhost:8888/meters/test_user").then((response) => {
-        console.log(response);
-        this.meters = response.data;
-        console.log(this.meters)
-
-      });
+      // axios.get("http://localhost:8888/bills/meters/"+this.$store.state.user.login).then((response) => {
+      //   console.log(response);
+      //   this.meters = response.data;
+      //   console.log(this.meters)
+      // });
 
       // this.meters = [
       //   {
@@ -406,11 +405,16 @@ export default {
         gas: this.editedItem.gas
       }
       console.log(meter)
-      await this.addMeterAction(meter)
+      await this.addMeterAction(meter,this.$store.state.user)
     this.close()
 
 
   },
+
+    async getMeters () {
+     await this.getMeterAction(this.$store.state.user)
+      this.meters = this.$store.state.metersList
+    },
   }
 }
 </script>

@@ -7,34 +7,37 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        user:{},
+        user: {},
         // isLoggedIn:localStorage.getItem("token"),
-        isLoggedIn:false,
-        isRegistrationFormVisible:false,
+        isLoggedIn: false,
+        isRegistrationFormVisible: false,
         metersList: []
     },
-    getters: {
-
-    },
+    getters: {},
 
     mutations: {
-        registerForm(state, newValue){
-            state.isRegistrationFormVisible=newValue
+        registerForm(state, newValue) {
+            state.isRegistrationFormVisible = newValue
 
         },
-        loginUserMutation(state,user){
+        loginUserMutation(state, user) {
             state.isLoggedIn = true
             state.user = user
+            console.log('loginUserMutation', state.user)
+        },
+        logoutUserMutation(state, newValue) {
+            state.isLoggedIn = newValue
+        },
+        registerUserMutation(state, responseMessage) {
+            state.responseMessage = responseMessage
+            console.log('registerUserMutation', this.metersList)
 
         },
-        registerUserMutation(state, responseMessage){
-            state.responseMessage=responseMessage
-        },
-        addMetersMutation(state,meter){
-                state.metersList = [
-                    ...state.metersList,
-                    meter
-                ]
+        addMetersMutation(state, meter) {
+            state.metersList = [
+                ...state.metersList,
+                meter
+            ]
             console.log('addMetersMutation', this.metersList)
         },
         setMetersMutation(state, meters) {
@@ -45,23 +48,24 @@ export default new Vuex.Store({
     actions: {
         async loginUserAction({commit, state}, userToLogin) {
             const response = await userApi.login(userToLogin)
-            const data = await  response.json()
-            // localStorage.setItem("token", "JWT")
-            console.log(data)
-            commit('loginUserMutation',data)
+            const data = await response.json()
+            // localStorage.setItem("token", data.toString())
+            console.log('loginUserAction', data)
+            commit('loginUserMutation', data)
         },
         async registerUserAction({commit, state}, userToRegistration) {
             const response = await userApi.registration(userToRegistration)
             const data = await response.json()
+            console.log('registerUserAction', data)
             commit('registerUserMutation', data)
         },
-        async addMeterAction({commit, state}, meter){
-            const result = await metersApi.add(meter)
+        async addMeterAction({commit, state}, meter, user) {
+            const result = await metersApi.add(meter, user)
             const data = await result.json()
             commit('addMetersMutation', data)
         },
-        async getMeterAction({ commit }){
-            const result = await metersApi.getAll()
+        async getMeterAction({commit}, user) {
+            const result = await metersApi.getAll(user)
             const data = await result.data
             console.log('getActions', data)
             commit('setMetersMutation', data);

@@ -28,10 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 				.cors().and().csrf().disable()
+				.antMatcher("/**")
 				.authorizeRequests()
-				.antMatchers("/auth/**").permitAll()
-				.and()
-				.authorizeRequests()
+				.antMatchers("/", "/bills/**", "/js/**", "/auth/**").permitAll()
 				.anyRequest().authenticated()
 				.and().logout()
 				.deleteCookies("remove")
@@ -39,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.invalidateHttpSession(true)
 				.logoutUrl("/logout")
 				.logoutSuccessUrl("/")
-				.permitAll().permitAll()
+				.permitAll()
 				.and().httpBasic();
 	}
 

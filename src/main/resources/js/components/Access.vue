@@ -127,7 +127,7 @@ export default {
       this.genders.abbr = ''
       this.email = ''
 
-      this.registerForm(false)
+      this.closeForm()
     },
     closeForm(){
       this.registerForm(false)
