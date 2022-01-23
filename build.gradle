@@ -41,7 +41,7 @@ repositories {
 }
 
 node{
-    version =10.16
+    version = '17.4.0'
     download =true
 }
 
