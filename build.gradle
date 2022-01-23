@@ -2,12 +2,17 @@ plugins {
     id 'org.springframework.boot' version '2.5.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.liquibase.gradle" version "2.0.4"
+    id "com.github.node-gradle.node" version "3.1.0"
     id 'java'
 }
+
 apply plugin: "org.liquibase.gradle"
+apply plugin: 'com.github.node-gradle.node'
+
 group = 'ru.assaulov'
 version = '0.10.7'
 sourceCompatibility = '17'
+targetCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -15,8 +20,29 @@ configurations {
     }
 }
 
+task buildFront(type: YarnTask) {
+    args = ['built']
+}
+
+yarn_install.dependsOn(yarn_cache_clean)
+buildFront.dependsOn(yarn_install)
+processResources.dependsOn(buildFront)
+
+
+sourceSets {
+    main {
+        resources {
+            exclude 'js'
+        }
+    }
+}
+
 repositories {
     mavenCentral()
+}
+
+node{
+    download =true
 }
 
 dependencies {
@@ -58,8 +84,12 @@ liquibase {
         }
     }
 }
-
+jar {
+    archiveBaseName = 'Bills'
+}
 
 test {
     useJUnitPlatform()
 }
+
+tasks.withType(Test) {enabled = false}
