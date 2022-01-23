@@ -1,15 +1,17 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-toolbar-title>Utility Bills</v-toolbar-title>
+      <v-toolbar-title>Utility Bills-ServerEdition2</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="isLoggedIn" icon href="/logout">
-        <v-icon>exit_to_app</v-icon>
+      <v-btn v-if="isLoggedIn" @click="meters">Meters</v-btn>
+      <v-spacer></v-spacer>
+      <v-btn v-if="isLoggedIn" @click="logout" >
+<!--        <v-icon>exit_to_app</v-icon>--> LOG OUT
       </v-btn>
     </v-app-bar>
     <v-main >
       <router-view></router-view>
-      <span class="message" v-show="responseMessage !== null">{{responseMessage.message}}</span>
+      <span class="message" v-if="userData && isLoggedIn">{{user}}</span>
       <access v-show="isRegistrationFormVisible"></access>
       <v-btn
           large
@@ -30,26 +32,49 @@
 <script>
 import {mapMutations, mapState} from "vuex";
 import Access from "../components/Access.vue";
+import Vue from 'vue';
 
 export default {
+  name: 'app',
+  created () {
+    // Read sessionStorage on page load
+    if (sessionStorage.getItem('store')) {
+      this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
+    }
+    // Save the store to sessionStorage when the page is refreshed
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.setItem('store', JSON.stringify(this.$store.state))
+    })
+  },
   components: {Access},
   data() {
     return {
+      userData: true,
       access: true
     }
   },
   computed: {
-    ...mapState(['isLoggedIn', 'responseMessage', 'isRegistrationFormVisible'])
+    ...mapState(['isLoggedIn', 'user', 'isRegistrationFormVisible'])
   },
   methods: {
-    ...mapMutations(['registerForm']),
+    ...mapMutations(['registerForm', 'logoutUserMutation']),
 
     login(){
       this.$router.push('/auth')
     },
+    logout(){
+      Vue.http.post('/bills/logout')
+      this.logoutUserMutation(false)
+      sessionStorage.clear()
+      this.$router.push('/bills')
+    },
     showAccessForm(){
       this.registerForm(true)
-    }
+    },
+    meters(){
+      this.$router.push('/bills/meters')
+      this.userData = false;
+    },
   },
 }
 </script>
