@@ -19,9 +19,7 @@ configurations {
     }
 }
 
-task myScript(type: NodeTask) {
-  options = ['--node-option', '--openssl-legacy-provider']
-}
+
 task buildFront(type: YarnTask) {
     args = ['built']
 }
@@ -45,7 +43,7 @@ repositories {
 
 node{
     version = '17.4.0'
-    distBaseUrl = 'https://unofficial-builds.nodejs.org/download/release/'
+//    distBaseUrl = 'https://unofficial-builds.nodejs.org/download/release/'
     download =true
 }
 
@@ -87,9 +85,6 @@ liquibase {
             password properties['password']
         }
     }
-}
-jar {
-    archiveBaseName = 'Bills'
 }
 
 test {

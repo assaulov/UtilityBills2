@@ -16,8 +16,12 @@ import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	final UserServiceImp userService;
+
 	@Autowired
-	UserServiceImp userService;
+	public WebSecurityConfig(UserServiceImp userService) {
+		this.userService = userService;
+	}
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
