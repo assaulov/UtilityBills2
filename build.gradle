@@ -43,7 +43,12 @@ repositories {
 
 node{
     version = '17.4.0'
-//    distBaseUrl = 'https://unofficial-builds.nodejs.org/download/release/'
+    system = System.getenv('SYSTEM')
+    if(system==win) {
+        distBaseUrl = 'https://nodejs.org/dist/'
+    } else if(system==unix){
+        distBaseUrl = 'https://unofficial-builds.nodejs.org/download/release/'
+    }
     download =true
 }
 
