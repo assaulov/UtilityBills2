@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-toolbar-title>Utility Bills-ServerEdition2</v-toolbar-title>
+      <v-toolbar-title>Привет, Наташа! Я все уронил!</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn v-if="isLoggedIn" @click="meters">Meters</v-btn>
       <v-spacer></v-spacer>
