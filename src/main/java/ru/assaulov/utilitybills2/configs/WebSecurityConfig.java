@@ -3,6 +3,7 @@ package ru.assaulov.utilitybills2.configs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,11 +17,11 @@ import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	final UserServiceImp userService;
+	final UserServiceImp UserServiceImp;
 
 	@Autowired
-	public WebSecurityConfig(UserServiceImp userService) {
-		this.userService = userService;
+	public WebSecurityConfig(@Lazy UserServiceImp UserServiceImp) {
+		this.UserServiceImp = UserServiceImp;
 	}
 
 	@Bean
@@ -49,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
-				.userDetailsService(userService)
+				.userDetailsService(UserServiceImp)
 				.passwordEncoder(bCryptPasswordEncoder());
 	}
 

@@ -41,14 +41,17 @@ repositories {
     mavenCentral()
 }
 
+def system = System.getenv('SYSTEM')
+def baseUrl = null
+if(system=='win') {
+    baseUrl = 'https://nodejs.org/dist/'
+} else if(system=='unix'){
+    baseUrl = 'https://unofficial-builds.nodejs.org/download/release/'
+}
+
 node{
     version = '17.4.0'
-    system = System.getenv('SYSTEM')
-    if(system==win) {
-        distBaseUrl = 'https://nodejs.org/dist/'
-    } else if(system==unix){
-        distBaseUrl = 'https://unofficial-builds.nodejs.org/download/release/'
-    }
+    distBaseUrl = baseUrl
     download =true
 }
 
