@@ -20,39 +20,40 @@ configurations {
 }
 
 
-task buildFront(type: YarnTask) {
-    args = ['built']
+def profile = System.getenv("spring.profiles.active");
+node {
+    version = '17.4.0'
+    if (profile == 'prod') {
+        def system = System.getenv('SYSTEM')
+        if (system == 'win') {
+            distBaseUrl = 'https://nodejs.org/dist/'
+        } else if (system == 'unix') {
+            distBaseUrl = 'https://unofficial-builds.nodejs.org/download/release/'
+        }
+    }
+    download = true
 }
 
-yarn_install.dependsOn(yarn_cache_clean)
-buildFront.dependsOn(yarn_install)
-processResources.dependsOn(buildFront)
+if (profile == 'prod') {
+    task buildFront(type: YarnTask) {
+        args = ['built']
+    }
+    yarn_install.dependsOn(yarn_cache_clean)
+    buildFront.dependsOn(yarn_install)
+    processResources.dependsOn(buildFront)
 
-
-sourceSets {
-    main {
-        resources {
-            exclude 'js'
+    sourceSets {
+        main {
+            resources {
+                exclude 'js'
+            }
         }
     }
 }
 
+
 repositories {
     mavenCentral()
-}
-
-def system = System.getenv('SYSTEM')
-def baseUrl = null
-if(system=='win') {
-    baseUrl = 'https://nodejs.org/dist/'
-} else if(system=='unix'){
-    baseUrl = 'https://unofficial-builds.nodejs.org/download/release/'
-}
-
-node{
-    version = '17.4.0'
-    distBaseUrl = baseUrl
-    download =true
 }
 
 dependencies {
@@ -64,7 +65,7 @@ dependencies {
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'javax.xml.bind:jaxb-api'
-    implementation  'org.springframework.session:spring-session-jdbc'
+    implementation 'org.springframework.session:spring-session-jdbc'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
@@ -76,21 +77,18 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
-    liquibaseRuntime  'org.liquibase:liquibase-core'
+    liquibaseRuntime 'org.liquibase:liquibase-core'
     liquibaseRuntime 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
 }
 
 liquibase {
     activities {
-        main{
-            File propsFile = new File("${project.rootDir}/src/main/resources/liquibase.properties")
-            Properties properties = new Properties()
-            properties.load(new FileInputStream(propsFile))
-            changeLogFile properties['changeLogFile']
-            url properties['url']
-            username properties['username']
-            password properties['password']
+        main {
+            changeLogFile System.getenv('CHANGE_LOG')
+            url System.getenv('DB_URL')
+            username System.getenv('POSTGRES_USER')
+            password System.getenv('POSTGRES_PASSWORD')
         }
     }
 }

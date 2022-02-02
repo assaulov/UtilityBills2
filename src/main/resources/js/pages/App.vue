@@ -1,31 +1,26 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-toolbar-title>Привет, Наташа! Я все уронил!</v-toolbar-title>
+      <v-toolbar-title>
+        <router-link to="/" tag="span" style="cursor: pointer">
+        UtilityBills-2
+        </router-link>
+      </v-toolbar-title>
+      <v-btn class="meters" v-if="isLoggedIn" @click="meters">Meters</v-btn>
       <v-spacer></v-spacer>
-      <v-btn v-if="isLoggedIn" @click="meters">Meters</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn v-if="isLoggedIn" @click="logout" >
-<!--        <v-icon>exit_to_app</v-icon>--> LOG OUT
+      <v-btn
+          v-if="!isLoggedIn && $route.path !== '/auth'"
+          @click="showAccessForm"
+      >Войти </v-btn>
+      <v-btn  v-if="isLoggedIn" @click="logout" >
+       LOG OUT
       </v-btn>
     </v-app-bar>
-    <v-main >
-      <router-view></router-view>
-      <span class="message" v-if="userData && isLoggedIn">{{user}}</span>
-      <access v-show="isRegistrationFormVisible"></access>
-      <v-btn
-          large
-          height="400px"
-          width="900px"
-          color="indigo"
-        style="font-size: 200px"
-          class="login"
-          v-if="!isLoggedIn && $route.path !== '/auth'"
-          @click="showAccessForm">
-        Войти
-      </v-btn>
+    <access v-show="isRegistrationFormVisible"></access>
 
-    </v-main>
+    <v-content>
+      <router-view></router-view>
+    </v-content>
   </v-app>
 </template>
 
@@ -72,8 +67,8 @@ export default {
       this.registerForm(true)
     },
     meters(){
-      this.$router.push('/bills/meters')
       this.userData = false;
+      this.$router.push('/bills/meters')
     },
   },
 }
@@ -81,22 +76,7 @@ export default {
 
 <style>
 
-.login {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-.message{
-  font-size:50px;
-  color: forestgreen;
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+.meters{
+margin: 1%;
 }
 </style>

@@ -1,5 +1,4 @@
 <template>
-
   <v-data-table
       :headers="headers"
       :items="meters"
@@ -132,13 +131,13 @@
           class="mr-2"
           @click="editItem(item)"
       >
-        mdi-pencil
+        edit
       </v-icon>
       <v-icon
           small
           @click="deleteItem(item)"
       >
-        mdi-delete
+        delete
       </v-icon>
     </template>
     <template v-slot:footer>
@@ -153,7 +152,6 @@
   </v-data-table>
 
 
-
 </template>
 
 
@@ -165,32 +163,34 @@ import meters from "../api/meters";
 export default {
   name: "MetersTable",
   data: () => {
-      return {
-    dialog: false,
-    dialogDelete: false,
-    meters: [],
-    headers: [
-      {
-        text: 'meterDataWrite',
-        align: 'start',
-        sortable: false,
-        value: 'meterDataWrite',
+    return {
+      dialog: false,
+      dialogDelete: false,
+      meters: [],
+      headers: [
+        {
+          text: 'meterDataWrite',
+          align: 'start',
+          sortable: false,
+          value: 'meterDataWrite',
+        },
+        {text: 'coldWater', value: 'coldWater'},
+        {text: 'hotWater', value: 'hotWater'},
+        {text: 'electricity', value: 'electricity'},
+        {text: 'gas', value: 'gas'},
+        {text: 'Actions', value: 'actions', sortable: false},
+      ],
+      editedIndex: -1,
+      editedItem: {
+        meterId: null,
+        meterDataWrite: '',
+        coldWater: 0,
+        hotWater: 0,
+        electricity: 0,
+        gas: 0,
       },
-      {text: 'coldWater', value: 'coldWater'},
-      {text: 'hotWater', value: 'hotWater'},
-      {text: 'electricity', value: 'electricity'},
-      {text: 'gas', value: 'gas'},
-      {text: 'Actions', value: 'actions', sortable: false},
-    ],
-    editedIndex: -1,
-    editedItem: {
-      meterDataWrite: '',
-      coldWater: 0,
-      hotWater: 0,
-      electricity: 0,
-      gas: 0,
-    },
-  }},
+    }
+  },
 
   computed: {
     formTitle() {
@@ -212,16 +212,16 @@ export default {
   mounted() {
     this.getMeters()
   },
-  created(){
+  created() {
     this.getMeters()
   },
 
   methods: {
-    ...mapActions(['addMeterAction', 'getMeterAction']),
+    ...mapActions(['addMeterAction', 'getMeterAction', 'deleteMeterAction', 'updateMeterAction']),
     ...mapState(['user']),
     initialize() {
 
-    // this.$store.dispatch('getMeterAction')
+      // this.$store.dispatch('getMeterAction')
 
       // axios.get("http://localhost:8888/bills/meters/"+this.$store.state.user.login).then((response) => {
       //   console.log(response);
@@ -359,7 +359,7 @@ export default {
       //     "gas": 115.0
       //   }
       // ]
-      },
+    },
 
     editItem(item) {
       this.editedIndex = this.meters.indexOf(item)
@@ -368,23 +368,31 @@ export default {
     },
 
     deleteItem(item) {
-      this.editedIndex = this.meters.indexOf(item)
-      this.editedItem = Object.assign({}, item)
+      this.editedItem.meterId = item.meterId
       this.dialogDelete = true
     },
 
-    deleteItemConfirm() {
-      this.meters.splice(this.editedIndex, 1)
+    async deleteItemConfirm() {
+      const meter = {
+        meterId: this.editedItem.meterId,
+        userLogin: this.user.login.toString()
+      }
+      await this.deleteMeterAction(meter)
+      await this.getMeters()
       this.closeDelete()
+      this.window.refresh()
     },
 
     close() {
       this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-
+      this.editedItem.meterId=null
+      this.editedItem.meterDataWrite=null
+      this.editedItem.userLogin=null
+      this.editedItem.coldWater=null
+      this.editedItem.hotWater=null
+      this.editedItem.electricity=null
+      this.editedItem.gas=null
+      this.getMeters()
     },
 
     closeDelete() {
@@ -395,24 +403,34 @@ export default {
       })
     },
 
-  async save () {
+    async save() {
       const meter = {
         userLogin: this.user.login,
         meterDataWrite: this.editedItem.meterDataWrite,
         coldWater: this.editedItem.coldWater,
-        hotWater:this.editedItem.hotWater,
+        hotWater: this.editedItem.hotWater,
         electricity: this.editedItem.electricity,
         gas: this.editedItem.gas
       }
       console.log(meter)
-      await this.addMeterAction(meter,this.$store.state.user)
-    this.close()
+      if(this.editedItem.meterId!=null){
+        meter.meterId = this.editedItem.meterId
+        await  this.updateMeterAction(meter)
+      } else {
+        await this.addMeterAction(meter, this.$store.state.user)
+      }
+      this.editedItem.meterId=null
+      this.editedItem.meterDataWrite=null
+      this.editedItem.userLogin=null
+      this.editedItem.coldWater=null
+      this.editedItem.hotWater=null
+      this.editedItem.electricity=null
+      this.editedItem.gas=null
+      this.close()
+    },
 
-
-  },
-
-    async getMeters () {
-     await this.getMeterAction(this.$store.state.user)
+    async getMeters() {
+      await this.getMeterAction(this.$store.state.user)
       this.meters = this.$store.state.metersList
     },
   }

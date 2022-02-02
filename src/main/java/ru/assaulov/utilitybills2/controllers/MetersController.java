@@ -40,8 +40,10 @@ public class MetersController {
 				String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), userLogin)));
 	}
 
-	@DeleteMapping
+	@PostMapping("/delete")
 	public ResponseEntity<?> deleteMeter(@PathVariable("userLogin") String userLogin, @RequestBody MetersRequest request){
+		System.out.println(userLogin);
+		System.out.println(request);
 		if(metersService.deleteMeterById(request)){
 			return ResponseEntity.ok(new MessageResponse("Meter with ID: " + request.getMeterId() + " deleted successful"));
 		}

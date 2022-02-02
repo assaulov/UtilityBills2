@@ -5,14 +5,11 @@ module.exports = merge(common, {
     mode: 'development',
     devtool: 'source-map',
     devServer: {
-        contentBase: './dist',
+        static: './dist',
         compress: true,
         port: 8000,
         allowedHosts: [
             'localhost:8888/bills'
-        ],
-        stats: 'normal',
-        clientLogLevel: 'error',
-
+        ]
     },
 });

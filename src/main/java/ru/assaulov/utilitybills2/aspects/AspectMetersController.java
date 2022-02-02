@@ -28,9 +28,9 @@ public class AspectMetersController {
 		LOGGER.info("Start checking user request is valid by login");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
-		LOGGER.debug("Auth user " + user.getLogin());
+		LOGGER.info("Auth user " + user.getLogin());
 		String requestLogin = joinPoint.getArgs()[0].toString();
-		LOGGER.debug("requestLogin " + requestLogin);
+		LOGGER.info("requestLogin " + requestLogin);
 		if(!requestLogin.equals(user.getLogin())) {
 			LOGGER.info("Authenticated user is not same in request");
 			throw new BaseException(String.format(ErrorType.ENTITY_NOT_CURRENT_USER.getDescription(), "you send request from another user"));

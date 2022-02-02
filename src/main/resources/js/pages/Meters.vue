@@ -1,22 +1,16 @@
 <template>
-  <v-container>
-    <v-layout justify-space-around>
-      <v-flex :xs6="!$vuetify.breakpoint.xsOnly">
-        <div class="title mb-3">User Profile</div>
-        <v-layout row justify-space-between>
-          <v-flex class="px-1">
-            <v-layout column>
-              <v-flex>{{this.user.login}}</v-flex>
-              <v-flex>{{this.user.fullName}}</v-flex>
-              <v-flex>{{this.user.gender}}</v-flex>
-              <v-flex>{{this.user.email}}</v-flex>
-            </v-layout>
-          </v-flex>
-        </v-layout>
+  <v-container fluid>
+    <v-layout row wrap>
+      <v-flex xs12 class="text-center" mt-5>
+        <h1>User Profile</h1>
+          <p>Login: {{ this.user.login }}</p>
+          <p>Username: {{ this.user.fullName }}</p>
+          <p>Gender: {{ this.user.gender }}</p>
+          <p>E-Mail: {{ this.user.email }}</p>
       </v-flex>
     </v-layout>
-<
-    <MetersTable></MetersTable>
+
+    <MetersTable/>
 
   </v-container>
 
@@ -26,13 +20,28 @@
 import {mapState} from "vuex";
 import MetersTable from "../components/MetersTable.vue";
 
+
 export default {
   name: "Meters",
   components: {MetersTable},
   computed: {
     ...mapState(['user'])
   },
+  methods: {
+    reload(event) {
+      this.$router.push('/bills/meters')
+    }
+  },
+  mounted() {
+    window.addEventListener('unload', this.reload)
+  },
+  beforeDestroy() {
+    window.removeEventListener('unload', this.reload)
+
+  }
 }
+
+
 </script>
 
 <style scoped>
