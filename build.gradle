@@ -20,11 +20,13 @@ configurations {
 }
 
 
-def profile = System.getenv("spring.profiles.active");
+def profile = System.getenv("PROFILE");
 node {
+    println "profile in node = $profile"
     version = '17.4.0'
     if (profile == 'prod') {
         def system = System.getenv('SYSTEM')
+        println "system = $system"
         if (system == 'win') {
             distBaseUrl = 'https://nodejs.org/dist/'
         } else if (system == 'unix') {
@@ -34,7 +36,9 @@ node {
     download = true
 }
 
+println "profile before task buildFront = $profile"
 if (profile == 'prod') {
+    println "start task buildFront"
     task buildFront(type: YarnTask) {
         args = ['built']
     }
