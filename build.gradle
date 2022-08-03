@@ -3,6 +3,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.liquibase.gradle" version "2.0.4"
     id "com.github.node-gradle.node" version "3.1.0"
+    id 'checkstyle'
+//    id 'pmd'
     id 'java'
 }
 
@@ -99,6 +101,21 @@ liquibase {
 
 test {
     useJUnitPlatform()
+    dependsOn checkstyleMain, checkstyleTest
+}
+
+checkstyle {
+    toolVersion '10.3.1'
+    configFile file("config/checkstyle/checkstyle.xml")
+    ignoreFailures = false
+    maxWarnings = 0
+    maxErrors = 0
+}
+checkstyleMain {
+    source ='src/main/java'
+}
+checkstyleTest {
+    source = 'src/test/java'
 }
 
 //tasks.withType(Test) {enabled = false}

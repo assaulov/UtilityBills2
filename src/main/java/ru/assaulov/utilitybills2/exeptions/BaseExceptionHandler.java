@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class BaseExceptionHandler {
 
-	@ExceptionHandler(BaseException.class)
-	public ResponseEntity<String> handle(BaseException e) {
-		return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+    @ExceptionHandler(BaseException.class)
+    public ResponseEntity<String> handle(BaseException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

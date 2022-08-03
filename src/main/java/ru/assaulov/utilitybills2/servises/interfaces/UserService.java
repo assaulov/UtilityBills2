@@ -8,14 +8,14 @@ import java.util.Optional;
 
 public interface UserService {
 
-	User save(RegistrationRequest request);
+    User save(RegistrationRequest request);
 
-	Optional<User> findUserById(long userId);
+    Optional<User> findUserById(long userId);
 
-	Boolean update(User user);
+    Boolean update(User user);
 
-	List<User> findAllUsers();
+    List<User> findAllUsers();
 
-	Boolean deleteUserById(long userId);
+    Boolean deleteUserById(long userId);
 
 }

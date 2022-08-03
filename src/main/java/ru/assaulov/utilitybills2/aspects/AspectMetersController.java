@@ -17,25 +17,25 @@ import ru.assaulov.utilitybills2.model.User;
 @Component
 public class AspectMetersController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AspectMetersController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AspectMetersController.class);
 
-	@Pointcut("execution(* ru.assaulov.utilitybills2.controllers.MetersController.*(..))")
-	public void allMethods() {
-	}
+    @Pointcut("execution(* ru.assaulov.utilitybills2.controllers.MetersController.*(..))")
+    public void allMethods() {
+    }
 
-	@Around("allMethods()")
-	public Object checkUserRequest(ProceedingJoinPoint  joinPoint) throws Throwable {
-		LOGGER.info("Start checking user request is valid by login");
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = (User) auth.getPrincipal();
-		LOGGER.info("Auth user " + user.getLogin());
-		String requestLogin = joinPoint.getArgs()[0].toString();
-		LOGGER.info("requestLogin " + requestLogin);
-		if(!requestLogin.equals(user.getLogin())) {
-			LOGGER.info("Authenticated user is not same in request");
-			throw new BaseException(String.format(ErrorType.ENTITY_NOT_CURRENT_USER.getDescription(), "you send request from another user"));
-		}
-		LOGGER.info("Authenticated user is same in request");
-		return  joinPoint.proceed();
-	}
+    @Around("allMethods()")
+    public Object checkUserRequest(ProceedingJoinPoint joinPoint) throws Throwable {
+        LOGGER.info("Start checking user request is valid by login");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        LOGGER.info("Auth user " + user.getLogin());
+        String requestLogin = joinPoint.getArgs()[0].toString();
+        LOGGER.info("requestLogin " + requestLogin);
+        if (!requestLogin.equals(user.getLogin())) {
+            LOGGER.info("Authenticated user is not same in request");
+            throw new BaseException(String.format(ErrorType.ENTITY_NOT_CURRENT_USER.getDescription(), "you send request from another user"));
+        }
+        LOGGER.info("Authenticated user is same in request");
+        return joinPoint.proceed();
+    }
 }
