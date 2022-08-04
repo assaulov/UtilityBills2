@@ -6,5 +6,6 @@ import ru.assaulov.utilitybills2.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
     User findByLoginIgnoreCase(String login);
 }

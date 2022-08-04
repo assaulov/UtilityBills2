@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class MetersRequest {
+
     private String userLogin;
     private Long meterId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")

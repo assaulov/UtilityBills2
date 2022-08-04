@@ -10,7 +10,7 @@ import 'vuetify/dist/vuetify.min.css'
 Vue.use(Vuetify)
 
 new Vue({
-    vuetify : new Vuetify(),
+    vuetify: new Vuetify(),
     el: '#app',
     store,
     router,

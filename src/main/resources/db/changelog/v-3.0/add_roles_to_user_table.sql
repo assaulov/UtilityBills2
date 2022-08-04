@@ -1,2 +1,2 @@
 ALTER TABLE t_users
-ADD COLUMN roles varchar(128)
+    ADD COLUMN roles varchar(128)

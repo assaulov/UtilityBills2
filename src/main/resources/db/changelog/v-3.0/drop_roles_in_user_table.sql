@@ -1,2 +1,2 @@
 ALTER TABLE t_users
-DROP COLUMN roles
+    DROP COLUMN roles

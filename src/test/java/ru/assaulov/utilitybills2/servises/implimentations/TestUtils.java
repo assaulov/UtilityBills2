@@ -89,13 +89,6 @@ public final class TestUtils {
                 .getAsDouble();
     }
 
-    private static int randomValue(int rangeMin, int rangeMax) {
-        Random r = new Random();
-        return r.ints(rangeMin, rangeMax)
-                .findFirst()
-                .getAsInt();
-    }
-
     private static LocalDate randomDate() {
         return LocalDate.now().minus(Period.ofDays(new Random().nextInt(365)));
     }

@@ -16,7 +16,7 @@ import ru.assaulov.utilitybills2.servises.implimentations.UserServiceImp;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    final UserServiceImp userServiceImp;
+    private final UserServiceImp userServiceImp;
 
     @Autowired
     public WebSecurityConfig(@Lazy UserServiceImp userServiceImp) {

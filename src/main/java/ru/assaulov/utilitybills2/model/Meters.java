@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.*;
 
@@ -18,7 +20,11 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode(of = {"meterId", "meterDataWrite"})
 @SuperBuilder(toBuilder = true)
-public class Meters {
+public class Meters implements Serializable {
+
+    @Serial
+    static final long serialVersionUID = -7034897190745766939L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "meter_id", nullable = false)
