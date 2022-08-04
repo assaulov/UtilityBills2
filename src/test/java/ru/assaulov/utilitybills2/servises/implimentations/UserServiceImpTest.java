@@ -1,6 +1,6 @@
 package ru.assaulov.utilitybills2.servises.implimentations;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -8,10 +8,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import ru.assaulov.utilitybills2.TestConfig;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
@@ -25,25 +25,22 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImpTest {
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpTest.class);
+public class UserServiceImpTest extends TestConfig {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpTest.class);
+    private final RegistrationRequest request = TestUtils.createRequest();
+    private final User user = TestUtils.createTestUser(request);
     @MockBean
     private UserRepository userRepository;
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @InjectMocks
     @Autowired
     private UserServiceImp userService;
-
-    private final RegistrationRequest request = TestUtils.createRequest();
-    private final User user = TestUtils.createTestUser(request);
 
     @Test
     public void testSaveUser() {

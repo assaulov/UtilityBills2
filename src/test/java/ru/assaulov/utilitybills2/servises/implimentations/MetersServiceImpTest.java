@@ -1,12 +1,14 @@
 package ru.assaulov.utilitybills2.servises.implimentations;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.assaulov.utilitybills2.TestConfig;
 import ru.assaulov.utilitybills2.model.Meters;
 import ru.assaulov.utilitybills2.model.User;
 import ru.assaulov.utilitybills2.payload.request.MetersRequest;
@@ -15,15 +17,18 @@ import ru.assaulov.utilitybills2.repositories.UserRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-public class MetersServiceImpTest {
+@ExtendWith(MockitoExtension.class)
+public class MetersServiceImpTest extends TestConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetersServiceImpTest.class);
     private final MetersRequest meterRequest = TestUtils.createMetersRequest("test");
