@@ -25,11 +25,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImpTest extends TestConfig {
+class UserServiceImpTest extends TestConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpTest.class);
     private final RegistrationRequest request = TestUtils.createRequest();
@@ -43,7 +42,7 @@ public class UserServiceImpTest extends TestConfig {
     private UserServiceImp userService;
 
     @Test
-    public void testSaveUser() {
+    void testSaveUser() {
         LOGGER.info("Test to save user in DB (Registration)");
 
         User savedUser = userService.save(request);
@@ -58,7 +57,7 @@ public class UserServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testFindUserByLogin() {
+    void testFindUserByLogin() {
         LOGGER.info("Test to find user by login");
         given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(user);
         UserDetails userDetails = userService.loadUserByUsername(request.getLogin());
@@ -66,7 +65,7 @@ public class UserServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testFindUserById() {
+    void testFindUserById() {
         LOGGER.info("Test to find user by id");
         user.setUserId(15L);
         given(userRepository.findById(any(Long.class))).willReturn(Optional.of(user));
@@ -75,7 +74,7 @@ public class UserServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testUpdateUser() {
+    void testUpdateUser() {
         LOGGER.info("Test to update user by id");
         User fieldsUpdate = new User().toBuilder()
                 .email("novii@mail.ru")
@@ -99,7 +98,7 @@ public class UserServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testFindAllUsers() {
+    void testFindAllUsers() {
         LOGGER.info("Test to find all user");
         ArrayList<User> users = new ArrayList<>();
         users.add(user);
@@ -113,7 +112,7 @@ public class UserServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testDeleteUser() {
+    void testDeleteUser() {
         LOGGER.info("Test to delete user by id");
         user.setUserId(15L);
         given(userService.findUserById(user.getUserId())).willReturn(Optional.of(user));

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import ru.assaulov.utilitybills2.model.enums.Gender;
 import ru.assaulov.utilitybills2.model.enums.Role;
 
+import java.io.Serial;
 import java.util.*;
 import javax.persistence.*;
 
@@ -20,6 +21,9 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"userId", "login", "firstName", "lastName", "gender", "email"})
 @ToString(of = {"userId", "login", "firstName", "lastName", "gender", "email"})
 public class User implements UserDetails {
+
+    @Serial
+    static final long serialVersionUID = -7034897190745766939L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

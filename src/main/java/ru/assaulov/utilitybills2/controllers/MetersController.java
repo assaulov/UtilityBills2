@@ -28,7 +28,6 @@ public class MetersController {
     @PostMapping
     public ResponseEntity<?> saveMeter(@PathVariable("userLogin") String userLogin, @RequestBody MetersRequest request) {
         request.setUserLogin(userLogin);
-        System.out.println(request);
         return Optional.of(metersService.saveMeter(request)).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).orElseThrow(() -> new BaseException(
                 String.format(ErrorType.ENTITY_NOT_SAVED.getDescription(), request)));
     }
@@ -42,8 +41,6 @@ public class MetersController {
 
     @PostMapping("/delete")
     public ResponseEntity<?> deleteMeter(@PathVariable("userLogin") String userLogin, @RequestBody MetersRequest request) {
-        System.out.println(userLogin);
-        System.out.println(request);
         if (metersService.deleteMeterById(request)) {
             return ResponseEntity.ok(new MessageResponse("Meter with ID: " + request.getMeterId() + " deleted successful"));
         }

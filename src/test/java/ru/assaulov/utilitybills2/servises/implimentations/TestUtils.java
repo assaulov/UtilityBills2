@@ -82,7 +82,7 @@ public final class TestUtils {
                     double y = x;
                     y = y * 1000;
                     y = Math.round(y);
-                    y = x / 1000;
+                    y = y / 1000;
                     return y;
                 })
                 .findFirst()

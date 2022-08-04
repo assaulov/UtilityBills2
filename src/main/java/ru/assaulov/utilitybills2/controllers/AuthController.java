@@ -41,13 +41,11 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword()));
         User userDetails = (User) authentication.getPrincipal();
-        System.out.println(userDetails);
         UserResponse response = new UserResponse().toBuilder()
                 .login(userDetails.getLogin())
                 .fullName(userDetails.getFullName())
                 .gender(userDetails.getGender().getDescription())
                 .email(userDetails.getEmail()).build();
-        System.out.println(response);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

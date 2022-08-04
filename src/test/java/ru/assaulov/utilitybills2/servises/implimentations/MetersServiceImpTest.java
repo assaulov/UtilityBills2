@@ -16,7 +16,6 @@ import ru.assaulov.utilitybills2.repositories.MetersRepository;
 import ru.assaulov.utilitybills2.repositories.UserRepository;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,7 +27,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MetersServiceImpTest extends TestConfig {
+class MetersServiceImpTest extends TestConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetersServiceImpTest.class);
     private final MetersRequest meterRequest = TestUtils.createMetersRequest("test");
@@ -45,7 +44,7 @@ public class MetersServiceImpTest extends TestConfig {
     private MetersServiceImp metersService;
 
     @Test
-    public void testSaveMeter() {
+    void testSaveMeter() {
         LOGGER.info("Test save meters");
         given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(testUser);
         Meters meter = metersService.saveMeter(meterRequest);
@@ -58,7 +57,7 @@ public class MetersServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testFindAllByUser() {
+    void testFindAllByUser() {
         LOGGER.info("Test show meters by user ID");
         given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(testUser);
         when(metersRepository.findAllByUserUserId(777L)).thenReturn(generatedMeters);
@@ -69,7 +68,7 @@ public class MetersServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testFindMetersByPeriod() {
+    void testFindMetersByPeriod() {
         LOGGER.info("Test show meters data by period");
         createSomeMeters(true, 7);
         meterRequest.setDateFrom(LocalDate.now().minusDays(365));
@@ -78,8 +77,6 @@ public class MetersServiceImpTest extends TestConfig {
         when(metersRepository.findMetersByPeriod(meterRequest.getDateFrom(), meterRequest.getDateTo(), testUser)).thenReturn(generatedMeters);
         List<Meters> metersFormDb = metersService.findMetersByPeriod(meterRequest);
         metersFormDb.sort(Comparator.comparing(Meters::getMeterDataWrite).thenComparing(Meters::getMeterId));
-        metersFormDb.forEach(meter -> System.out.println("id: " + meter.getMeterId() + " date: " + meter.getMeterDataWrite().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
-
         for (Meters meter : metersFormDb) {
             assertTrue(meter.getMeterDataWrite().isBefore(LocalDate.now().plusDays(1)), "Показание не входит в данный период (позже)");
             assertTrue(meter.getMeterDataWrite().isAfter(LocalDate.now().minusDays(365)), "Показание не входит в данный период (раньше)");
@@ -89,7 +86,7 @@ public class MetersServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testFindMetersByDate() {
+    void testFindMetersByDate() {
         LOGGER.info("Test show meters by date");
         given(userRepository.findByLoginIgnoreCase(any(String.class))).willReturn(testUser);
         LocalDate dateExpected = LocalDate.now();
@@ -103,7 +100,7 @@ public class MetersServiceImpTest extends TestConfig {
     }
 
     @Test
-    public void testDeleteByMeterId() {
+    void testDeleteByMeterId() {
         LOGGER.info("Test delete meters by meters ID");
         meterRequest.setMeterId(111L);
         Meters testMeter = TestUtils.createMeter(meterRequest, testUser);
