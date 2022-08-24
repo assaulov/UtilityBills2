@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.2'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '3.0.0-SNAPSHOT'
+    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
     id "org.liquibase.gradle" version "2.0.4"
     id "com.github.node-gradle.node" version "3.1.0"
     id 'com.github.spotbugs' version '5.0.9'
@@ -61,6 +61,8 @@ if (profile == 'prod') {
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
@@ -70,7 +72,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.liquibase:liquibase-core'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'org.springframework.session:spring-session-jdbc'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -97,6 +99,7 @@ liquibase {
             url System.getenv('DB_URL')
             username System.getenv('POSTGRES_USER')
             password System.getenv('POSTGRES_PASSWORD')
+            classpath "$rootDir"
         }
     }
 }

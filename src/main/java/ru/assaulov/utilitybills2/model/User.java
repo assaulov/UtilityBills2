@@ -1,16 +1,15 @@
 package ru.assaulov.utilitybills2.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
+import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import ru.assaulov.utilitybills2.model.enums.Gender;
-import ru.assaulov.utilitybills2.model.enums.Role;
+import lombok.experimental.*;
+import org.springframework.security.core.*;
+import org.springframework.security.core.userdetails.*;
+import ru.assaulov.utilitybills2.model.enums.*;
 
-import java.io.Serial;
+import java.io.*;
 import java.util.*;
-import javax.persistence.*;
 
 @Getter
 @Setter
